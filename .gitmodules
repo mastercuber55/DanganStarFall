@@ -1,3 +1,6 @@
 [submodule "external/FraxFramework"]
 	path = external/FraxFramework
 	url = https://github.com/mastercuber55/Frax-Framework
+[submodule "external/Physac"]
+	path = external/Physac
+	url = https://github.com/victorfisac/Physac
