@@ -1,10 +1,16 @@
 #include "Scenes.hpp"
 
 SceneGame::SceneGame() : Player({ 0, 0, 32, 32}, "Assets/Chiaki Ship.png") {
+    InitPhysics();
+    SetPhysicsGravity(0, 0.5f);
+
+    Player.PhyInit(32);
 
 }
 
 void SceneGame::Update() {
+
+    RunPhysicsStep();
 
     int Speed = 16;
 
@@ -27,9 +33,9 @@ void SceneGame::Update() {
 }
 
 void SceneGame::Draw() {
-    Player.Draw();
+    Player.PhyDraw();
 }
 
 SceneGame::~SceneGame() {
-
+    ClosePhysics();
 }

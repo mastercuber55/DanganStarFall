@@ -1,6 +1,7 @@
 #define FRAX_IMPL
-#include <Frax.hpp>
-#include "Scenes/Scenes.hpp"
+#define PHYSAC_IMPLEMENTATION
+
+#include "Scenes/Scenes.hpp" // Includes Frax and Physac
 
 int main () {
     Frax::Init(640, 480, "DanganStarFall");

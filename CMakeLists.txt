@@ -9,6 +9,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(SOURCES
     main.cxx
     Scenes/SceneGame.cxx
+    Scenes/PhyRect.cxx
 )
 
 # Add executable
@@ -19,13 +20,16 @@ set(RAYLIB_INCLUDE_DIR "/usr/local/include")   # Adjust path to your raylib head
 set(RAYLIB_LIBRARY     "/usr/local/lib/libraylib.a") # Or .so
 
 target_link_libraries(${PROJECT_NAME} PRIVATE raylib)
-target_include_directories(DanganStarFall PRIVATE ${CMAKE_SOURCE_DIR}/external/FraxFramework)
+target_include_directories(DanganStarFall PRIVATE 
+    ${CMAKE_SOURCE_DIR}/external/FraxFramework
+    ${CMAKE_SOURCE_DIR}/external/Physac/src
+)
 
 # Optional: enable compiler warnings
 if(MSVC)
     target_compile_options(${PROJECT_NAME} PRIVATE /W4 /WX)
 else()
-    target_compile_options(${PROJECT_NAME} PRIVATE -Wall -Wextra -Wpedantic -Werror)
+    target_compile_options(${PROJECT_NAME} PRIVATE -Wall -Wextra -Wpedantic)
 endif()
 
 # Set output directories
