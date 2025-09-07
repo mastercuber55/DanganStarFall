@@ -1,5 +1,8 @@
 #include <Frax.hpp>
 #include <physac.h>
+#undef max
+#include <raymath.h>
+#include <vector>
 
 struct PhyRect : Frax::Rect {
     PhysicsBody Body;
@@ -17,7 +20,10 @@ struct PhyRect : Frax::Rect {
 };
 
 struct SceneGame : Frax::Scene {
+    Camera2D Cam;
     PhyRect Player;
+    std::vector<Vector2> Stars;
+    std::vector<Vector2> Asteroids;
 
     SceneGame();
 

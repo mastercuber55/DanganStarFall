@@ -11,7 +11,6 @@ PhyRect(Rectangle Destination, Color Tint);
 */
 
 PhyRect::PhyRect(Rectangle Destination, Color Tint) : Frax::Rect(Destination, Tint) {
-
 }
 
 PhyRect::PhyRect(										
