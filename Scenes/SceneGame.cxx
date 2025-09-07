@@ -28,14 +28,16 @@ void SceneGame::Update() {
     float angle = DEG2RAD * Player.Rotation;
     Vector2 force = { speed * cosf(angle), speed * sinf(angle) }; // f for float
 
+    Controls.Update(Player, force);
+    
 	if(IsKeyDown(KEY_W)) {
         PhysicsAddForce(Player.Body, force);
     }
+    if(IsKeyDown(KEY_S)) {
+        // Might add reverse thrust later
+    }
 	if(IsKeyDown(KEY_A)) {
         Player.Rotation -= 5;
-    }
-	if(IsKeyDown(KEY_S)) {
-        // Might add reverse thrust later
     }
 	if(IsKeyDown(KEY_D)) {
         Player.Rotation += 5;
@@ -65,7 +67,7 @@ void SceneGame::Update() {
 }
 
 void SceneGame::Draw() {
-
+    
     BeginMode2D(Cam);
 
         for(Vector2 star : Stars) {
@@ -74,6 +76,8 @@ void SceneGame::Draw() {
 
         Player.PhyDraw();
     EndMode2D();
+
+    Controls.Draw();
 }
 
 SceneGame::~SceneGame() {
