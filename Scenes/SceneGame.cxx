@@ -1,10 +1,9 @@
 #include "Scenes.hpp"
 #include <math.h>
 
-// TODO: MAKE THRUST SPRITE
-// I want to have random aah asteroids around the screen
+// TODO: ADD ASTEROIDS TOMMMOROWWW!!!
 
-SceneGame::SceneGame() : Player({Frax::ScreenSize.x/2, Frax::ScreenSize.y/2, 32, 32}, "Assets/Chiaki Ship.png") {
+SceneGame::SceneGame() : Player({0, 0, 32, 32}, "Assets/Chiaki Ship.png") {
     InitPhysics();
     SetPhysicsGravity(0, 0);
 
@@ -26,7 +25,8 @@ void SceneGame::Update() {
 
     float speed = 50;
     float angle = DEG2RAD * Player.Rotation;
-    Vector2 force = { speed * cosf(angle), speed * sinf(angle) };
+    Vector2 forward = { cosf(angle), sinf(angle) }; // Unit vector keeping our lovely direction.
+    Vector2 force = Vector2Scale(forward, speed);
     
     #ifdef PLATFORM_ANDROID
         Controls.Update(Player, force);
@@ -37,12 +37,15 @@ void SceneGame::Update() {
     if(Cam.zoom < 1) Cam.zoom = 1;
     if(IsKeyPressed(KEY_Z)) Cam.zoom = 1; 
 
-    // YAY LETS INVENT DANGAN FINALLY
-    // if(IsMouseButtonDown(MOUSE_LEFT_BUTTON)) {
-    //     PhysicsBody body = CreatePhysicsBodyRectangle(Player, 4, 4, 16);
-    //     PhysicsAddForce(body, force);
-    // }
+    // YAY LETS IMPLEMENT DANGAN FINALLY
+    if(IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
+        Vector2 pos = Vector2Add(Player.GetCenter(), Vector2Scale(forward, 32));
+        PhysicsBody body = CreatePhysicsBodyRectangle(pos, 1, 1, 128);
+        PhysicsAddForce(body, force);
+        PhysicsAddForce(Player, Vector2Scale(force, -4));
+    }
 
+    if(IsKeyPressed(KEY_X)) Player.Body->velocity = { 0, 0 }; // Useful for me while testing.
 	if(IsKeyDown(KEY_W))  PhysicsAddForce(Player, force);
     // if(IsKeyDown(KEY_S)) might add reverse thrust later
 	if(IsKeyDown(KEY_A)) Player.Rotation -= 5;
@@ -88,13 +91,23 @@ void SceneGame::Draw() {
             DrawPixel(star.x, star.y, WHITE);
         }
 
+        Player.PhyDraw();
+        
         for (int i = GetPhysicsBodiesCount() - 1; i > 0; i--) {
             auto body = GetPhysicsBody(i);
             DrawCircleV(body->position, 2, RED);
         }
 
-        Player.PhyDraw();
+        
     EndMode2D();
+
+    // %d since I have no need at all to know my position to decimal values.
+    DrawText(TextFormat("Co-ordinates: (%d, %d)", (int)Player.x, (int)Player.y), 64, 64, 32, WHITE);
+    
+    // Lets draw how far is the player from the origin for kinda engangement.
+    // Player itself is a Vector2 containing its distance from origin in terms of x and y components.
+    int dist = Vector2Length(Player); // it returns float value
+    DrawText(TextFormat("Distance: %d", dist), 64, 128, 32, WHITE);
 
     #ifdef PLATFORM_ANDROID
         Controls.Draw();
