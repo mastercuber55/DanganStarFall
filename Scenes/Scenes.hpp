@@ -19,25 +19,31 @@ struct PhyRect : Frax::Rect {
 	~PhyRect();
 };
 
-struct SceneTouchControls : Frax::Scene {
+#ifdef PLATFORM_ANDROID
 
-    Vector2 joyBase;
-    Vector2 joyValue;
-    Vector2 joyKnob;
-    float joyRadius;
+    struct SceneTouchControls : Frax::Scene {
 
-    SceneTouchControls();
+        Vector2 joyBase;
+        Vector2 joyValue;
+        Vector2 joyKnob;
+        float joyRadius;
 
-    void Update(PhyRect & Player, Vector2 Force); // REmoved overide
-    void Draw() override;
-    
-    ~SceneTouchControls();
-};
+        SceneTouchControls();
+
+        void Update(PhyRect & Player, Vector2 Force); // REmoved overide
+        void Draw() override;
+        
+        ~SceneTouchControls();
+    };
+
+#endif
 
 struct SceneGame : Frax::Scene {
 
-    SceneTouchControls Controls;
-
+    #ifdef PLATFORM_ANDROID
+        SceneTouchControls Controls;
+    #endif
+     
     Camera2D Cam;
     PhyRect Player;
     std::vector<Vector2> Stars;

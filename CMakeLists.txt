@@ -8,7 +8,6 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 # Add source files
 set(SOURCES
     main.cxx
-    Scenes/SceneTouchControls.cxx
     Scenes/SceneGame.cxx
     Scenes/PhyRect.cxx
 )

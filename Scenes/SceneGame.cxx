@@ -27,9 +27,11 @@ void SceneGame::Update() {
     float speed = 50;
     float angle = DEG2RAD * Player.Rotation;
     Vector2 force = { speed * cosf(angle), speed * sinf(angle) }; // f for float
-
-    Controls.Update(Player, force);
     
+    #ifdef PLATFORM_ANDROID
+        Controls.Update(Player, force);
+    #endif
+
 	if(IsKeyDown(KEY_W)) {
         PhysicsAddForce(Player.Body, force);
     }
@@ -77,7 +79,9 @@ void SceneGame::Draw() {
         Player.PhyDraw();
     EndMode2D();
 
-    Controls.Draw();
+    #ifdef PLATFORM_ANDROID
+        Controls.Draw();
+    #endif
 }
 
 SceneGame::~SceneGame() {

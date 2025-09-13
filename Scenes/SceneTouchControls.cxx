@@ -10,9 +10,9 @@ SceneTouchControls::SceneTouchControls() {
 
 void SceneTouchControls::Update(PhyRect &Player, Vector2 force) {
 
-    if(IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {
+    if(GetTouchPointCount() == 1) {
         // Difference between finger and center
-        Vector2 diff = Vector2Subtract(GetMousePosition(), joyBase);
+        Vector2 diff = Vector2Subtract(GetTouchPosition(0), joyBase);
 
         // Distance from center
         float len = Vector2Length(diff);
@@ -29,7 +29,7 @@ void SceneTouchControls::Update(PhyRect &Player, Vector2 force) {
         joyKnob = Vector2Add(joyBase, diff);
         // Vector2Scale will make the internal values between -1 and 1
         joyValue = Vector2Scale(diff, 1.0f / joyRadius);
-    } else if(IsMouseButtonReleased(MOUSE_BUTTON_LEFT)) {
+    } else {
         joyKnob = joyBase;
         joyValue = { 0, 0};
     }
