@@ -2,17 +2,23 @@
 
 // Did you know that Scenes can overlap and run concurrently???
 SceneTouchControls::SceneTouchControls() {
-    joyRadius = 64;
-    joyBase = { 64 + 32, 480 - 64 - 32 };
+    joyRadius = 128;
+    joyBase = { joyRadius * 1.5, Frax::ScreenSize.y - joyRadius * 2 };
     joyKnob = joyBase;
-    joyValue = { 0, 0};
+    joyValue = { 0, 0 };
 }
 
 void SceneTouchControls::Update(PhyRect &Player, Vector2 force) {
 
-    if(GetTouchPointCount() == 1) {
+    if(IsMouseButtonDown(MOUSE_LEFT_BUTTON)) {
         // Difference between finger and center
-        Vector2 diff = Vector2Subtract(GetTouchPosition(0), joyBase);
+
+        Vector2 diff;
+        if(GetTouchPointCount() != 0) {
+            diff = Vector2Subtract(GetTouchPosition(0), joyBase);
+        } else {
+            diff = Vector2Subtract(GetMousePosition(), joyBase);
+        }
 
         // Distance from center
         float len = Vector2Length(diff);
@@ -44,8 +50,8 @@ void SceneTouchControls::Update(PhyRect &Player, Vector2 force) {
 
 void SceneTouchControls::Draw() {
 
-    DrawCircleLinesV(joyBase, 64, WHITE);
-    DrawCircleV(joyKnob, 32, WHITE);
+    DrawCircleLinesV(joyBase, joyRadius, WHITE);
+    DrawCircleV(joyKnob, joyRadius/2, WHITE);
 }
 
 SceneTouchControls::~SceneTouchControls() {

@@ -9,7 +9,7 @@ PhyRect(Rectangle Destination, Color Tint);
 	);
 	~PhyRect();
 */
-
+ 
 PhyRect::PhyRect(Rectangle Destination, Color Tint) : Frax::Rect(Destination, Tint) {
 }
 
@@ -23,6 +23,10 @@ PhyRect::PhyRect(
 
 void PhyRect::PhyInit(float density) {
     Body = CreatePhysicsBodyRectangle({ x, y }, w, h, density);
+}
+
+PhyRect::operator PhysicsBody() const {
+	return this->Body;
 }
 
 void PhyRect::PhyDraw() {

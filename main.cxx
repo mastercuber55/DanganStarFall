@@ -4,7 +4,7 @@
 #include "Scenes/Scenes.hpp" // Includes the above's respective libraries
 
 int main () {
-    Frax::Init(640, 480, "DanganStarFall");
+    Frax::Init("DanganStarFall");
 
     SceneGame().Run();
 
