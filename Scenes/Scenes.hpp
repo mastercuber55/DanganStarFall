@@ -7,19 +7,21 @@
 #include <vector> // Required for stars and asteroids
 // #define PLATFORM_ANDROID
 
-struct PhyRect : Frax::Rect {
+struct PhyObj : Frax::Rect {
     PhysicsBody Body;
 
-    void PhyInit(float density);
+    void RectInit(float density);
+    void CircleInit(float density);
+
     void PhyDraw();
 
-	PhyRect(Rectangle Destination, Color Tint);	
-	PhyRect(										
+	PhyObj(Rectangle Destination, Color Tint);	
+	PhyObj(										
 		Rectangle Destination, 
 		std::string TextureFile, 
 		Rectangle Source = { 0, 0, -1, -1 }
 	);
-	~PhyRect();
+	~PhyObj();
 
     operator PhysicsBody() const;
 };
@@ -35,7 +37,7 @@ struct SceneTouchControls : Frax::Scene {
 
     SceneTouchControls();
 
-    void Update(PhyRect & Player, Vector2 Force); // REmoved overide
+    void Update(PhyObj & Player, Vector2 Force); // REmoved overide
     void Draw() override;
     
     ~SceneTouchControls();
@@ -50,9 +52,10 @@ struct SceneGame : Frax::Scene {
     #endif
      
     Camera2D Cam;
-    PhyRect Player;
+    PhyObj Player;
     std::vector<Vector2> Stars;
     std::vector<PhysicsBody> Bullets;
+    std::vector<PhyObj> Asteroids;
 
     SceneGame();
 

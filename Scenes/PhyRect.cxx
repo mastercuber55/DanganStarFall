@@ -1,19 +1,9 @@
 #include "Scenes.hpp"
-
-/*
-PhyRect(Rectangle Destination, Color Tint);	
-	PhyRect(										
-		Rectangle Destination, 
-		std::string TextureFile, 
-		Rectangle Source = { 0, 0, -1, -1 }
-	);
-	~PhyRect();
-*/
  
-PhyRect::PhyRect(Rectangle Destination, Color Tint) : Frax::Rect(Destination, Tint) {
+PhyObj::PhyObj(Rectangle Destination, Color Tint) : Frax::Rect(Destination, Tint) {
 }
 
-PhyRect::PhyRect(										
+PhyObj::PhyObj(										
     Rectangle Destination, 
     std::string TextureFile, 
     Rectangle Source
@@ -21,21 +11,24 @@ PhyRect::PhyRect(
 
 }
 
-void PhyRect::PhyInit(float density) {
-    Body = CreatePhysicsBodyRectangle({ x, y }, w, h, density);
+void PhyObj::RectInit(float density) {
+    Body = CreatePhysicsBodyRectangle(this->GetCenter(), this->w, this->h, density);
 }
 
-PhyRect::operator PhysicsBody() const {
+void PhyObj::CircleInit(float density) {
+    Body = CreatePhysicsBodyCircle(this->GetCenter(), this->w/2, density);
+}
+
+PhyObj::operator PhysicsBody() const {
 	return this->Body;
 }
 
-void PhyRect::PhyDraw() {
-    x = Body->position.x;
-    y = Body->position.y;
-
+void PhyObj::PhyDraw() {
+    this->SetCenter(Body->position);
+    Rotation = Body->orient * 180/PHYSAC_PI;
     Draw();
 }
 
-PhyRect::~PhyRect() {
+PhyObj::~PhyObj() {
     DestroyPhysicsBody(Body);
 }
