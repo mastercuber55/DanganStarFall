@@ -19,6 +19,9 @@ SceneGame::SceneGame() : Player({0, 0, 32, 32}, "Assets/Chiaki Ship.png") {
     for(int i  = 0; i < 1000; i++) {
         Stars.push_back(Frax::GetRandomPosition(Cam));
     }
+
+    shoot = LoadSound("Assets/shoot.wav");
+
 }
 
 void SceneGame::Update() {
@@ -33,17 +36,16 @@ void SceneGame::Update() {
     #endif
      
     // Owo, whats this?? basically since we are now using dynamic resolutions so it won't look bad in fullscreen, it would be convinent to allow players to zoom in to get a clear view, while making sure they don't zoom out of default 1 (b/w 0 and 1) in order to get benifits
-    Cam.zoom += GetMouseWheelMove() * 1/8; 
+    Cam.zoom += GetMouseWheelMove() * (IsKeyDown(KEY_LEFT_CONTROL) ? 1.0f/2 : 1.0f/8); 
     if(Cam.zoom < 1) Cam.zoom = 1;
     if(IsKeyPressed(KEY_Z)) Cam.zoom = 1; 
 
     // Dangan
     if(IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
-        Vector2 pos = Vector2Add(Player.GetCenter(), Vector2Scale(dir, 32));
-        PhysicsBody body = CreatePhysicsBodyRectangle(pos, 1, 1, 128);
-        Bullets.push_back(body);
-        PhysicsAddForce(body, force);
+        Vector2 pos = Player.GetCenter();
+        Bullets.push_back({pos.x, pos.y, Player.Body->orient});
         PhysicsAddForce(Player, Vector2Scale(force, -4));
+        PlaySound(shoot);
     }
 
     if(IsKeyPressed(KEY_X)) Player.Body->velocity = { 0, 0 }; // Useful for me while testing.
@@ -53,13 +55,13 @@ void SceneGame::Update() {
 	if(IsKeyDown(KEY_D)) Player.Body->orient += 0.1;
 
     RunPhysicsStep();
-    Cam.target = Player;
+    Cam.target = Player.GetCenter();
 
     // Physics bodies outside of the screen die.                         
-    for (int i = GetPhysicsBodiesCount() - 1; i > 0; i--) {
-        auto body = GetPhysicsBody(i);
-        float dx = body->position.x - Cam.target.x;
-        float dy = body->position.y - Cam.target.y;
+    for (auto i = 0; i < Bullets.size(); i++) {
+        Bullet &bullet = Bullets[i];
+        float dx = bullet.x - Cam.target.x;
+        float dy = bullet.y - Cam.target.y;
 
         if (
             dx < -Frax::ScreenSize.x/2 ||
@@ -67,7 +69,9 @@ void SceneGame::Update() {
             dy < -Frax::ScreenSize.y/2 ||
             dy >  Frax::ScreenSize.y/2
         )  {
-            DestroyPhysicsBody(body); 
+            Bullets.erase(Bullets.begin() + i); 
+        } else {
+            bullet = Vector2Add(bullet, Vector2Scale({ cosf(bullet.Radian), sinf(bullet.Radian) }, 8));
         }
     }
 
@@ -92,9 +96,9 @@ void SceneGame::Draw() {
         }
 
         Player.PhyDraw();
- 
-        for(auto body : Bullets) {
-            DrawCircleV(body->position, 2, RED);
+
+        for(auto bullet : Bullets) {
+            DrawCircleV(bullet, 2, RED);
         }
 
         

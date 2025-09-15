@@ -1,5 +1,5 @@
 #include <Frax.hpp>
-#define PHYSAC_NO_THREADS // this fixed the crashses
+// #define PHYSAC_NO_THREADS // this fixed the crashses
 #include <physac.h>
 #include <cstdlib>
 #undef max
@@ -45,16 +45,24 @@ struct SceneTouchControls : Frax::Scene {
 
 #endif
 
+struct Bullet : Vector2 {
+    float Radian;
+    void operator=(Vector2 NewPos);
+    operator Vector2() const;
+};
+
 struct SceneGame : Frax::Scene {
 
     #ifdef PLATFORM_ANDROID
         SceneTouchControls Controls;
     #endif
      
+    Sound shoot;
+
     Camera2D Cam;
     PhyObj Player;
     std::vector<Vector2> Stars;
-    std::vector<PhysicsBody> Bullets;
+    std::vector<Bullet> Bullets;
     std::vector<PhyObj> Asteroids;
 
     SceneGame();

@@ -12,6 +12,7 @@ PhyObj::PhyObj(
 }
 
 void PhyObj::RectInit(float density) {
+
     Body = CreatePhysicsBodyRectangle(this->GetCenter(), this->w, this->h, density);
 }
 
@@ -31,4 +32,12 @@ void PhyObj::PhyDraw() {
 
 PhyObj::~PhyObj() {
     DestroyPhysicsBody(Body);
+}
+
+Bullet::operator Vector2() const {
+	return { this->x, this->y };
+}
+void Bullet::operator=(Vector2 NewPos) {
+	this->x = NewPos.x;
+	this->y = NewPos.y;
 }
