@@ -1,6 +1,6 @@
 #define FRAX_IMPL
-#define PHYSAC_IMPLEMENTATION
 #define RAYMATH_IMPLEMENTATION
+#define RAYMUNK_IMPL
 #include "Scenes/Scenes.hpp" // Includes the above's respective libraries
 
 int main () {

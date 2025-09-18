@@ -1,30 +1,11 @@
 #include <Frax.hpp>
-// #define PHYSAC_NO_THREADS // this fixed the crashses
-#include <physac.h>
 #include <cstdlib>
 #undef max
 #include <raymath.h>
 #include <vector> // Required for stars and asteroids
 // #define PLATFORM_ANDROID
-
-struct PhyObj : Frax::Rect {
-    PhysicsBody Body;
-
-    void RectInit(float density);
-    void CircleInit(float density);
-
-    void PhyDraw();
-
-	PhyObj(Rectangle Destination, Color Tint);	
-	PhyObj(										
-		Rectangle Destination, 
-		std::string TextureFile, 
-		Rectangle Source = { 0, 0, -1, -1 }
-	);
-	~PhyObj();
-
-    operator PhysicsBody() const;
-};
+#include <raymunk++.hpp>
+#include "../Classes/Bullet.hpp"
 
 #ifdef PLATFORM_ANDROID
 
@@ -45,29 +26,25 @@ struct SceneTouchControls : Frax::Scene {
 
 #endif
 
-struct Bullet : Vector2 {
-    float Radian;
-    void operator=(Vector2 NewPos);
-    operator Vector2() const;
-};
-
 struct SceneGame : Frax::Scene {
 
     #ifdef PLATFORM_ANDROID
         SceneTouchControls Controls;
     #endif
      
+    cpSpace* space;
+
     Sound shoot;
+    Sound explosion;
 
     Camera2D Cam;
     PhyObj Player;
     std::vector<Vector2> Stars;
     std::vector<Bullet> Bullets;
-    std::vector<PhyObj> Asteroids;
 
     SceneGame();
 
-    void Update() override;
+    void Update(float dt) override;
     void Draw() override;
     
     ~SceneGame();

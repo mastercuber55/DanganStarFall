@@ -10,7 +10,7 @@ set(SOURCES
     main.cxx
     # Scenes/SceneTouchControls.cxx
     Scenes/SceneGame.cxx
-    Scenes/PhyRect.cxx
+    Classes/Bullet.cxx
 )
 
 # Add executable
@@ -23,8 +23,12 @@ set(RAYLIB_LIBRARY     "/usr/local/lib/libraylib.a") # Or .so
 target_link_libraries(${PROJECT_NAME} PRIVATE raylib)
 target_include_directories(DanganStarFall PRIVATE 
     ${CMAKE_SOURCE_DIR}/external/FraxFramework
-    ${CMAKE_SOURCE_DIR}/external/Physac/src
+    ${CMAKE_SOURCE_DIR}/external/raymunk++
 )
+
+find_library(CHIPMUNK_LIB chipmunk REQUIRED)
+include_directories(/usr/include/chipmunk)
+target_link_libraries(${PROJECT_NAME} PRIVATE ${CHIPMUNK_LIB} m)
 
 # Optional: enable compiler warnings
 if(MSVC)
