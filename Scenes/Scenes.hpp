@@ -1,51 +1,50 @@
 #include <Frax.hpp>
 #include <cstdlib>
-#undef max
+#include <pebble.hpp>
 #include <raymath.h>
-#include <vector> // Required for stars and asteroids
+#include <vector>
 // #define PLATFORM_ANDROID
-#include <raymunk++.hpp>
 #include "../Classes/Bullet.hpp"
+
+struct SceneGame : Frax::Scene {
+
+#ifdef PLATFORM_ANDROID
+  SceneTouchControls Controls;
+#endif
+
+  Sound shoot;
+  Sound explosion;
+
+  cpSpace *Space;
+
+  Camera2D Cam;
+  Frax::Rect Player;
+  std::vector<Vector2> Stars;
+  std::vector<Bullet> Bullets;
+
+  SceneGame();
+
+  void Update(float dt) override;
+  void Draw() override;
+
+  ~SceneGame();
+};
 
 #ifdef PLATFORM_ANDROID
 
 struct SceneTouchControls : Frax::Scene {
 
-    Vector2 joyBase;
-    Vector2 joyValue;
-    Vector2 joyKnob;
-    float joyRadius;
+  Vector2 joyBase;
+  Vector2 joyValue;
+  Vector2 joyKnob;
+  float joyRadius;
 
-    SceneTouchControls();
+  SceneTouchControls();
 
-    void Update(PhyObj & Player, Vector2 Force); // REmoved overide
-    void Draw() override;
-    
-    ~SceneTouchControls();
+  void Update(PhyObj &Player, Vector2 Force); // REmoved overide
+  void Draw() override;
+
+  ~SceneTouchControls();
 };
 
 #endif
-
-struct SceneGame : Frax::Scene {
-
-    #ifdef PLATFORM_ANDROID
-        SceneTouchControls Controls;
-    #endif
-     
-    cpSpace* space;
-
-    Sound shoot;
-    Sound explosion;
-
-    Camera2D Cam;
-    PhyObj Player;
-    std::vector<Vector2> Stars;
-    std::vector<Bullet> Bullets;
-
-    SceneGame();
-
-    void Update(float dt) override;
-    void Draw() override;
-    
-    ~SceneGame();
-};

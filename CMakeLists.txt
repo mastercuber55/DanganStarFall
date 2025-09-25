@@ -5,6 +5,8 @@ project(DanganStarFall VERSION 1.0 LANGUAGES C CXX)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
 # Add source files
 set(SOURCES
     main.cxx
@@ -16,19 +18,16 @@ set(SOURCES
 # Add executable
 add_executable(${PROJECT_NAME} ${SOURCES})
 
-# --- Specify Raylib manually ---
-set(RAYLIB_INCLUDE_DIR "/usr/local/include")   # Adjust path to your raylib headers
-set(RAYLIB_LIBRARY     "/usr/local/lib/libraylib.a") # Or .so
-
+find_package(raylib REQUIRED)
 target_link_libraries(${PROJECT_NAME} PRIVATE raylib)
-target_include_directories(DanganStarFall PRIVATE 
-    ${CMAKE_SOURCE_DIR}/external/FraxFramework
-    ${CMAKE_SOURCE_DIR}/external/raymunk++
-)
 
 find_library(CHIPMUNK_LIB chipmunk REQUIRED)
-include_directories(/usr/include/chipmunk)
 target_link_libraries(${PROJECT_NAME} PRIVATE ${CHIPMUNK_LIB} m)
+
+target_include_directories(DanganStarFall PRIVATE 
+    ${CMAKE_SOURCE_DIR}/external/FraxFramework
+    ${CMAKE_SOURCE_DIR}/external/pebble 
+)
 
 # Optional: enable compiler warnings
 if(MSVC)
