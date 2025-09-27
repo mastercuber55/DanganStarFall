@@ -1,33 +1,7 @@
-#include <Frax.hpp>
-#include <cstdlib>
-#include <pebble.hpp>
-#include <raymath.h>
-#include <vector>
-// #define PLATFORM_ANDROID
-#include "../Classes/Bullet.hpp"
+#include "../Systems/main.hpp"
 
-struct SceneGame : Frax::Scene {
-
-#ifdef PLATFORM_ANDROID
-  SceneTouchControls Controls;
-#endif
-
-  Sound shoot;
-  Sound explosion;
-
-  cpSpace *Space;
-
-  Camera2D Cam;
-  Frax::Rect Player;
-  std::vector<Vector2> Stars;
-  std::vector<Bullet> Bullets;
-
-  SceneGame();
-
-  void Update(float dt) override;
-  void Draw() override;
-
-  ~SceneGame();
+enum class CollisionType : cpCollisionType {
+  None, Player, Bullet, Asteroid
 };
 
 #ifdef PLATFORM_ANDROID
@@ -41,10 +15,33 @@ struct SceneTouchControls : Frax::Scene {
 
   SceneTouchControls();
 
-  void Update(PhyObj &Player, Vector2 Force); // REmoved overide
+  void Update(Pebble::Obj* Player, float Force, float dt);
   void Draw() override;
 
   ~SceneTouchControls();
 };
 
 #endif
+
+struct SceneGame : Frax::Scene {
+
+#ifdef PLATFORM_ANDROID
+  SceneTouchControls Controls;
+#endif
+
+  Sound shootSound;
+  Sound explosion;
+
+  cpSpace *Space;
+
+  Camera2D Cam;
+  Frax::Rect Player;
+  Pebble::Obj* playerObj;
+
+  SceneGame();
+
+  void Update(float dt) override;
+  void Draw() override;
+
+  ~SceneGame();
+};

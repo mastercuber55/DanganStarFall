@@ -1,14 +1,16 @@
 #include "Scenes.hpp"
+#include <raymath.h>
 
 // Did you know that Scenes can overlap and run concurrently???
+#ifdef PLATFORM_ANDROID
 SceneTouchControls::SceneTouchControls() {
   joyRadius = 128;
-  joyBase = {joyRadius * 1.5, Frax::ScreenSize.y - joyRadius * 2};
+  joyBase = {static_cast<float>(joyRadius * 1.5), Frax::ScreenSize.y - joyRadius * 2};
   joyKnob = joyBase;
   joyValue = {0, 0};
 }
 
-void SceneTouchControls::Update(PhyRect &Player, Vector2 force) {
+void SceneTouchControls::Update(Pebble::Obj* playerObj, float force, float dt) {
 
   if (IsMouseButtonDown(MOUSE_LEFT_BUTTON)) {
     // Difference between finger and center
@@ -41,10 +43,12 @@ void SceneTouchControls::Update(PhyRect &Player, Vector2 force) {
   }
 
   if (joyValue.y < 0) {
-    PhysicsAddForce(Player.Body, Vector2Scale(force, -joyValue.y));
+    playerObj->applyForce({force * -joyValue.y});
   }
   if (fabs(joyValue.x) > 0.1f) {
-    Player.Rotation += joyValue.x * 5;
+    float angle = playerObj->getAngle();
+    float angleDelta = joyValue.x * 10 * dt;
+    playerObj->setAngle(angle + angleDelta);
   }
 }
 
@@ -55,3 +59,4 @@ void SceneTouchControls::Draw() {
 }
 
 SceneTouchControls::~SceneTouchControls() {}
+#endif
