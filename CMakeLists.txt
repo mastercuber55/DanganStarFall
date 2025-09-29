@@ -15,10 +15,15 @@ set(SOURCES
     Systems/Asteroids.cxx
     Systems/Bullets.cxx
     Systems/Stars.cxx
+    Systems/BulletAsteroidCollision.cxx
+    Systems/Discord.cxx
 )
 
 # Add executable
 add_executable(${PROJECT_NAME} ${SOURCES})
+
+target_include_directories(${PROJECT_NAME} PRIVATE /usr/include/DiscordRPC)
+target_link_libraries(${PROJECT_NAME} PRIVATE discord-rpc)
 
 find_package(raylib REQUIRED)
 target_link_libraries(${PROJECT_NAME} PRIVATE raylib)

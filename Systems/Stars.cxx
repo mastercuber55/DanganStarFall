@@ -1,8 +1,9 @@
-#include "main.hpp"
+#include "index.hpp"
+#include <raylib.h>
 
 namespace Stars {
 std::vector<Vector2> list;
-void Init(Camera2D & cam) {
+void Init(Camera2D &cam) {
   for (int i = 0; i < 1000; i++) {
     list.push_back(Frax::GetRandomPositionInside(cam));
   }
@@ -24,8 +25,15 @@ void Maintain(Camera2D &cam) {
   }
 }
 void Draw() {
+
+  int rand = GetRandomValue(0, 1);
+  Color clr = WHITE;
+
+  if (rand == 0)
+    clr = {225, 247, 0, 255};
+
   for (auto &star : list) {
-    DrawPixel(star.x, star.y, WHITE);
+    DrawCircle(star.x, star.y, 1, clr);
   }
 }
 } // namespace Stars

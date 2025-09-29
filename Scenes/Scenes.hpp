@@ -1,8 +1,4 @@
-#include "../Systems/main.hpp"
-
-enum class CollisionType : cpCollisionType {
-  None, Player, Bullet, Asteroid
-};
+#include "../Systems/index.hpp"
 
 #ifdef PLATFORM_ANDROID
 

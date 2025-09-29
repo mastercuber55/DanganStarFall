@@ -1,4 +1,6 @@
 #include "Scenes.hpp"
+#include <chipmunk/cpSpace.h>
+#include <raylib.h>
 #define RAYMATH_IMPLEMENTATION
 #include <raymath.h>
 
@@ -18,7 +20,12 @@ SceneGame::SceneGame() : Player({0, 0, 32, 32}, "Assets/Chiaki Ship.png") {
   explosion = LoadSound("Assets/explosion.wav");
 
   Stars::Init(Cam);
-  Asteroids::Spawn({128, 128}, Space);
+  Asteroids::Spawn(Cam, Space);
+
+  auto handler = cpSpaceAddCollisionHandler(Space, (int)CollisionTypes::Bullet, (int)CollisionTypes::Asteroid);
+  handler->beginFunc = bulletAsteroidBegin;
+
+  Discord::Update("A Danganronpa Fan Game <3", "In Execution");
 }
 
 void SceneGame::Update(float dt) {
@@ -45,7 +52,7 @@ void SceneGame::Update(float dt) {
     Cam.zoom = 1;
 
   // Dangan
-  if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
+  if (IsMouseButtonDown(MOUSE_LEFT_BUTTON)) {
     Bullets::Shoot(playerObj, Space);
     PlaySound(shootSound);
   }
@@ -69,14 +76,19 @@ void SceneGame::Update(float dt) {
 
   Bullets::Maintain(Cam);
   Stars::Maintain(Cam);
+  Asteroids::Maintain(&explosion);
 
-  if (GetRandomValue(0, 100) < 10*dt) {
+  if (GetRandomValue(0, 100) < 10 * dt) {
     Asteroids::Spawn(Cam, Space);
   }
+
+  Discord_RunCallbacks();
 }
 
 void SceneGame::Draw() {
 
+  DrawRectangleGradientV(0, 0, Frax::ScreenSize.x, Frax::ScreenSize.y,
+                         {19, 16, 25, 255}, {35, 31, 82, 255});
   BeginMode2D(Cam);
 
   Stars::Draw();
@@ -91,8 +103,8 @@ void SceneGame::Draw() {
   DrawText(TextFormat("Co-ordinates: (%d, %d)", (int)Player.x, (int)Player.y),
            64, 64, 32, WHITE);
 
-  float dist = Vector2Length(Player); // distance from origin
-  DrawText(TextFormat("Distance: %d", int(dist)), 64, 128, 32, WHITE);
+  int dist = Vector2Length(Player); // distance from origin
+  DrawText(TextFormat("Distance: %d", dist), 64, 128, 32, WHITE);
 
 #ifdef PLATFORM_ANDROID
   Controls.Draw();

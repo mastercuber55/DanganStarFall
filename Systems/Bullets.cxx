@@ -1,4 +1,4 @@
-#include "main.hpp"
+#include "index.hpp"
 
 namespace Bullets {
 std::vector<Pebble::Obj *> list;
@@ -10,12 +10,25 @@ void Shoot(Pebble::Obj* playerObj, cpSpace *space) {
   bullet->applyImpulse({pow(2, 9), 0});
   playerObj->applyImpulse({-pow(2, 9), 0});
 
+  bullet->setCollisionType((int)CollisionTypes::Bullet);
+
   list.push_back(bullet);
 }
 void Maintain(Camera2D &Cam) {
+
   for (int i = 0; i < (int)list.size(); i++) {
+
+
+
     auto bullet = list[i];
-    auto pos = cpBodyGetPosition(bullet->Body);
+
+    if (bullet->ShouldDelete) {
+      delete bullet;
+      list.erase(list.begin() + i);
+      continue;
+    }
+    
+    auto pos = bullet->getPosition();
     float dx = pos.x - Cam.target.x;
     float dy = pos.y - Cam.target.y;
 
@@ -30,7 +43,7 @@ void Maintain(Camera2D &Cam) {
 void Draw() {
   for (auto &bullet : list) {
     auto pos = cpBodyGetPosition(bullet->Body);
-    DrawCircle(pos.x, pos.y, 2, RED);
+    DrawCircle(pos.x, pos.y, 2, { 0, 225, 0, 225 });
   }
 }
 } // namespace list

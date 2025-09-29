@@ -4,9 +4,11 @@
 
 int main() {
   Frax::Init("DanganStarFall");
+  Discord::Init();
   
   SceneGame().Run();
 
+  Discord::Close();
   Frax::Close();
 
   return 0;
