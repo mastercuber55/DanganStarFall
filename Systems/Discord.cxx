@@ -46,6 +46,7 @@ void Discord::Init() {
 
   Discord_Initialize(APPLICATION_ID.c_str(), &handlers, 1, nullptr);
 
+  rpc.instance = 1;
   rpc.startTimestamp = time(0);
   rpc.largeImageKey = "canary-large";
   rpc.largeImageText = "Dangan Starfall";
@@ -57,7 +58,6 @@ void Discord::Init() {
   rpc.matchSecret = "zxcvb";
   rpc.joinSecret = "dfghjk";
   rpc.spectateSecret = "tyul";
-  rpc.instance = 1;
   
 }
 
