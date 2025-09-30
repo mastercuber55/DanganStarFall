@@ -82,7 +82,7 @@ void SceneGame::Update(float dt) {
   Bullets::Maintain(Cam);
   Stars::Maintain(Cam);
   Asteroids::Maintain(&explosion);
-  Enemies::Maintain(&explosion);
+  Enemies::Maintain(&explosion, playerObj->getPosition());
 
   if (GetRandomValue(0, 100) < 10 * dt) {
     Asteroids::Spawn(Cam, Space);
@@ -101,6 +101,7 @@ void SceneGame::Draw() {
   Stars::Draw();
 
   Pebble::Draw(&Player);
+  DrawCircleLinesV(Player,300, RED);
 
   Bullets::Draw();
   Asteroids::Draw();

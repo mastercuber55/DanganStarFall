@@ -3,6 +3,10 @@ Dangan Starfall is a space shooter game set in the intense world of Danganronpa 
 
 ![alt text](image.png)
 
+# Get In Touch
+If you are interested in this project or would like to get in touch with me, join the development discord server.
+https://discord.gg/7zvpWnE7QV
+
 # Building from source.
 Before speaking anything, here are the things you'll need to have installed.
 - A C++ compiler

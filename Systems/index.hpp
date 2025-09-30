@@ -32,7 +32,7 @@ void Draw();
 namespace Enemies {
 extern std::vector<Frax::Rect*> list;
 void Spawn(Camera2D &, cpSpace *);
-void Maintain(Sound*);
+void Maintain(Sound*, cpVect player);
 void Draw();
 }
 
