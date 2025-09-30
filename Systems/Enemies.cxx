@@ -24,8 +24,8 @@ void Maintain(Sound *explosion) {
     auto box = std::any_cast<Pebble::Obj *>(enemy->Data);
 
     if (box->ShouldDelete) {
-      delete enemy;
       delete box;
+      delete enemy;
       list.erase(list.begin() + i);
       --i;
       PlaySound(*explosion);
