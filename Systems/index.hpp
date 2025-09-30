@@ -6,7 +6,7 @@
 #include <raylib.h>
 #include <vector>
 
-enum class CollisionTypes : cpCollisionType { None, Player, Bullet, Asteroid };
+enum class CollisionTypes : cpCollisionType { None, Player, Bullet, Asteroid, Enemy };
 
 namespace Asteroids {
 extern std::vector<std::unique_ptr<Frax::Rect>> list;
@@ -29,6 +29,13 @@ void Maintain(Camera2D &);
 void Draw();
 } // namespace Stars
 
+namespace Enemies {
+extern std::vector<Frax::Rect*> list;
+void Spawn(Camera2D &, cpSpace *);
+void Maintain(Sound*);
+void Draw();
+}
+
 namespace Discord {
 extern DiscordRichPresence rpc;
 void Init();
@@ -37,3 +44,4 @@ void Close();
 } // namespace Discord
 
 cpBool bulletAsteroidBegin(cpArbiter *, cpSpace *, void *data);
+cpBool bulletEnemyBegin(cpArbiter *, cpSpace *, void *data);

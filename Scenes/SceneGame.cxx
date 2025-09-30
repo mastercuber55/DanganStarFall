@@ -10,6 +10,7 @@ SceneGame::SceneGame() : Player({0, 0, 32, 32}, "Assets/Chiaki Ship.png") {
 
   playerObj = new Pebble::Obj(Space, {4, 4}, {32, 32}, 16);
   Player.Data = playerObj;
+  playerObj->setCollisionType((int)CollisionTypes::Player);
 
   Cam = {.offset = {Frax::ScreenSize.x / 2, Frax::ScreenSize.y / 2},
          .target = Player,
@@ -22,10 +23,14 @@ SceneGame::SceneGame() : Player({0, 0, 32, 32}, "Assets/Chiaki Ship.png") {
   Stars::Init(Cam);
   Asteroids::Spawn(Cam, Space);
 
-  auto handler = cpSpaceAddCollisionHandler(Space, (int)CollisionTypes::Bullet, (int)CollisionTypes::Asteroid);
-  handler->beginFunc = bulletAsteroidBegin;
+  auto handlerBulletAsteroid = cpSpaceAddCollisionHandler(Space, (int)CollisionTypes::Bullet, (int)CollisionTypes::Asteroid);
+  handlerBulletAsteroid->beginFunc = bulletAsteroidBegin;
 
-  Discord::Update("A Danganronpa Fan Game <3", "In Execution");
+  auto handlerBulletEnemy = cpSpaceAddCollisionHandler(
+      Space, (int)CollisionTypes::Bullet, (int)CollisionTypes::Enemy);
+  handlerBulletEnemy->beginFunc = bulletEnemyBegin;
+
+  Discord::Update("A Danganronpa Fan Game <3", "BEING EXECUTED HAHAHA");
 }
 
 void SceneGame::Update(float dt) {
@@ -52,7 +57,7 @@ void SceneGame::Update(float dt) {
     Cam.zoom = 1;
 
   // Dangan
-  if (IsMouseButtonDown(MOUSE_LEFT_BUTTON)) {
+  if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
     Bullets::Shoot(playerObj, Space);
     PlaySound(shootSound);
   }
@@ -77,9 +82,11 @@ void SceneGame::Update(float dt) {
   Bullets::Maintain(Cam);
   Stars::Maintain(Cam);
   Asteroids::Maintain(&explosion);
+  Enemies::Maintain(&explosion);
 
   if (GetRandomValue(0, 100) < 10 * dt) {
     Asteroids::Spawn(Cam, Space);
+    Enemies::Spawn(Cam, Space);
   }
 
   Discord_RunCallbacks();
@@ -97,6 +104,7 @@ void SceneGame::Draw() {
 
   Bullets::Draw();
   Asteroids::Draw();
+  Enemies::Draw();
 
   EndMode2D();
 

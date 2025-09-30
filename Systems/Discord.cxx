@@ -52,12 +52,12 @@ void Discord::Init() {
   rpc.largeImageText = "Dangan Starfall";
   rpc.smallImageKey = "chiaki";
   rpc.smallImageText = "Playing as Chiaki.";
-  rpc.partyId = "76324";
-  rpc.partySize = 1;
-  rpc.partyMax = 100;
-  rpc.matchSecret = "zxcvb";
-  rpc.joinSecret = "dfghjk";
-  rpc.spectateSecret = "tyul";
+  // rpc.partyId = "76324";
+  // rpc.partySize = 1;
+  // rpc.partyMax = 100;
+  // rpc.matchSecret = "zxcvb";
+  // rpc.joinSecret = "dfghjk";
+  // rpc.spectateSecret = "tyul";
   
 }
 

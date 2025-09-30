@@ -15,8 +15,9 @@ set(SOURCES
     Systems/Asteroids.cxx
     Systems/Bullets.cxx
     Systems/Stars.cxx
-    Systems/BulletAsteroidCollision.cxx
+    Systems/Collisions.cxx
     Systems/Discord.cxx
+    Systems/Enemies.cxx
 )
 
 # Add executable

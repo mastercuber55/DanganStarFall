@@ -41,7 +41,7 @@ void Maintain(Sound *explosion) {
       asteroid.reset();
       list.erase(list.begin() + i);
       --i;
-      // PlaySound(*explosion);
+      PlaySound(*explosion);
     }
   }
 }
