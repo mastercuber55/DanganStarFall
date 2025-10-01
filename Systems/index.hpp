@@ -8,8 +8,16 @@
 
 enum class CollisionTypes : cpCollisionType { None, Player, Bullet, Asteroid, Enemy };
 
+struct Entity : Frax::Rect {
+  float Health;
+  Pebble::Obj *Phy;
+  void Draw();
+
+  using Rect::Rect;
+};
+
 namespace Asteroids {
-extern std::vector<std::unique_ptr<Frax::Rect>> list;
+extern std::vector<Entity*> list;
 void Spawn(Camera2D, cpSpace *);
 void Maintain(Sound *);
 void Draw();
@@ -30,7 +38,7 @@ void Draw();
 } // namespace Stars
 
 namespace Enemies {
-extern std::vector<Frax::Rect*> list;
+extern std::vector<Entity*> list;
 void Spawn(Camera2D &, cpSpace *);
 void Maintain(Sound*, cpVect player);
 void Draw();
@@ -43,5 +51,4 @@ void Update(const std::string& details, const std::string& state);
 void Close();
 } // namespace Discord
 
-cpBool bulletAsteroidBegin(cpArbiter *, cpSpace *, void *data);
-cpBool bulletEnemyBegin(cpArbiter *, cpSpace *, void *data);
+cpBool bulletSomethingBegin(cpArbiter *, cpSpace *, void *data);

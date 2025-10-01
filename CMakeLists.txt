@@ -18,6 +18,7 @@ set(SOURCES
     Systems/Collisions.cxx
     Systems/Discord.cxx
     Systems/Enemies.cxx
+    Systems/Entity.cxx
 )
 
 # Add executable

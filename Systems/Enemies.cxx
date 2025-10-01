@@ -4,51 +4,42 @@
 #include <raymath.h>
 
 namespace Enemies {
-std::vector<Frax::Rect *> list;
+std::vector<Entity *> list;
 void Spawn(Camera2D &cam, cpSpace *space) {
-  Vector2 pos = Frax::GetRandomPositionInside(cam);
+  Vector2 pos = Frax::GetRandomPositionOutside(cam);
 
-  auto Enemy =
-      new Frax::Rect(Rectangle{pos.x, pos.y, 64, 64}, "Assets/Monokuma.png");
+  Entity* Enemy =
+      new Entity(Rectangle{pos.x, pos.y, 64, 64}, "Assets/Monokuma.png");
 
-  auto Obj = new Pebble::Obj(space, {pos.x, pos.y}, {32, 32}, 32);
+  Enemy->Phy = new Pebble::Obj(space, {pos.x, pos.y}, {32, 32}, 32);
 
-  Obj->setCollisionType((int)CollisionTypes::Enemy);
-
-  Enemy->Data = Obj;
+  Enemy->Phy->setCollisionType((int)CollisionTypes::Enemy);
 
   list.push_back(Enemy);
 }
 
 void Maintain(Sound *explosion, cpVect player) {
   for (int i = 0; i < (int)list.size(); i++) {
-    auto &enemy = list[i];
-    auto box = std::any_cast<Pebble::Obj *>(enemy->Data);
+    auto &Enemy = list[i];
 
-    if (box->ShouldDelete) {
-      delete box;
-      delete enemy;
+    if (Enemy->Phy->ShouldDelete) {
+      delete Enemy->Phy;
+      delete Enemy;
       list.erase(list.begin() + i);
       --i;
       PlaySound(*explosion);
       return;
     }
 
-    auto pos = box->getPosition();
-
-    int dist = Vector2Distance(
+    auto pos = Enemy->Phy->getPosition();
+    float currentAngle = Enemy->Phy->getAngle();
+    float targetAngle = atan2(player.y - pos.y, player.x - pos.x) - PI / 2;
+    float rotationStep = 0.05;
+    float angleDiff = Normalize(targetAngle - currentAngle, -PI, +PI);
+    float dist = Vector2Distance(
         {static_cast<float>(player.x), static_cast<float>(player.y)},
         {static_cast<float>(pos.x), static_cast<float>(pos.y)});
 
-    if (dist > 300)
-      continue;
-
-    float currentAngle = box->getAngle();
-    float targetAngle = atan2(player.y - pos.y, player.x - pos.x) - PI / 2;
-
-    float angleDiff = targetAngle - currentAngle;
-    angleDiff = Normalize(angleDiff, -PI, +PI);
-    float rotationStep = 0.05;
 
     if (angleDiff > 0) {
       currentAngle += rotationStep;
@@ -56,16 +47,22 @@ void Maintain(Sound *explosion, cpVect player) {
       currentAngle -= rotationStep;
     }
 
-    box->setAngle(currentAngle);
-    if (abs(angleDiff) < 1) {
-      box->applyForce({0, -2000});
-    }
+    Enemy->Phy->setAngle(currentAngle);
+    // box->setAngularVelocity(0);
+
+    if (abs(angleDiff) > 1)
+      continue;
+
+    Enemy->Phy->applyForce({0, -dist * 2});
+
+    if (dist > 200)
+      continue;
   }
 }
 
 void Draw() {
-  for (const auto &enemy : list) {
-    Pebble::Draw(enemy);
+  for (Entity* Enemy : list) {
+    Enemy->Draw();
   }
 }
 } // namespace Enemies

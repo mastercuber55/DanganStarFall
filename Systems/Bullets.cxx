@@ -7,8 +7,8 @@ void Shoot(Pebble::Obj* playerObj, cpSpace *space) {
   cpVect pos = playerObj->getPosition();
   auto bullet = new Pebble::Obj(space, pos, cpVect{1, 1}, 1);
   bullet->setAngle(playerObj->getAngle());
-  bullet->applyImpulse({pow(2, 9), 0});
-  playerObj->applyImpulse({-pow(2, 9), 0});
+  bullet->applyImpulse({0, -pow(2, 9)});
+  playerObj->applyImpulse({0, pow(2, 9)});
 
   bullet->setCollisionType((int)CollisionTypes::Bullet);
 
@@ -17,8 +17,6 @@ void Shoot(Pebble::Obj* playerObj, cpSpace *space) {
 void Maintain(Camera2D &Cam) {
 
   for (int i = 0; i < (int)list.size(); i++) {
-
-
 
     auto bullet = list[i];
 

@@ -5,32 +5,17 @@
 #include <chipmunk/cpShape.h>
 #include <raylib.h>
 
-cpBool bulletAsteroidBegin(cpArbiter *arb, cpSpace *space, void *data) {
+cpBool bulletSomethingBegin(cpArbiter *arb, cpSpace *space, void *data) {
   cpShape *sBullet;
-  cpShape *sAsteroid;
+  cpShape *sSomething;
 
-  cpArbiterGetShapes(arb, &sBullet, &sAsteroid);
+  cpArbiterGetShapes(arb, &sBullet, &sSomething);
 
   auto Bullet = static_cast<Pebble::Obj *>(cpShapeGetUserData(sBullet));
-  auto Asteroid = static_cast<Pebble::Obj *>(cpShapeGetUserData(sAsteroid));
+  auto Something = static_cast<Pebble::Obj *>(cpShapeGetUserData(sSomething));
 
   Bullet->ShouldDelete = true;
-  Asteroid->ShouldDelete = true;
-
-  return cpFalse;
-}
-
-cpBool bulletEnemyBegin(cpArbiter *arb, cpSpace *space, void *data) {
-  cpShape *sBullet;
-  cpShape *sEnemy;
-
-  cpArbiterGetShapes(arb, &sBullet, &sEnemy);
-
-  auto Bullet = static_cast<Pebble::Obj *>(cpShapeGetUserData(sBullet));
-  auto Enemy = static_cast<Pebble::Obj *>(cpShapeGetUserData(sEnemy));
-
-  Bullet->ShouldDelete = true;
-  Enemy->ShouldDelete = true;
+  Something->ShouldDelete = true;
 
   return cpFalse;
 }

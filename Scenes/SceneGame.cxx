@@ -8,9 +8,8 @@ SceneGame::SceneGame() : Player({0, 0, 32, 32}, "Assets/Chiaki Ship.png") {
 
   Space = cpSpaceNew();
 
-  playerObj = new Pebble::Obj(Space, {4, 4}, {32, 32}, 16);
-  Player.Data = playerObj;
-  playerObj->setCollisionType((int)CollisionTypes::Player);
+  Player.Phy = new Pebble::Obj(Space, {4, 4}, {32, 32}, 16);
+  Player.Phy->setCollisionType((int)CollisionTypes::Player);
 
   Cam = {.offset = {Frax::ScreenSize.x / 2, Frax::ScreenSize.y / 2},
          .target = Player,
@@ -23,12 +22,13 @@ SceneGame::SceneGame() : Player({0, 0, 32, 32}, "Assets/Chiaki Ship.png") {
   Stars::Init(Cam);
   Asteroids::Spawn(Cam, Space);
 
-  auto handlerBulletAsteroid = cpSpaceAddCollisionHandler(Space, (int)CollisionTypes::Bullet, (int)CollisionTypes::Asteroid);
-  handlerBulletAsteroid->beginFunc = bulletAsteroidBegin;
+  auto handlerBulletAsteroid = cpSpaceAddCollisionHandler(
+      Space, (int)CollisionTypes::Bullet, (int)CollisionTypes::Asteroid);
+  handlerBulletAsteroid->beginFunc = bulletSomethingBegin;
 
   auto handlerBulletEnemy = cpSpaceAddCollisionHandler(
       Space, (int)CollisionTypes::Bullet, (int)CollisionTypes::Enemy);
-  handlerBulletEnemy->beginFunc = bulletEnemyBegin;
+  handlerBulletEnemy->beginFunc = bulletSomethingBegin;
 
   Discord::Update("A Danganronpa Fan Game <3", "BEING EXECUTED HAHAHA");
 }
@@ -36,19 +36,16 @@ SceneGame::SceneGame() : Player({0, 0, 32, 32}, "Assets/Chiaki Ship.png") {
 void SceneGame::Update(float dt) {
 
   // Preparing variables
-  float angle = playerObj->getAngle();
+  float angle = Player.Phy->getAngle();
   float thrust = pow(2, 19) * dt;
-  float angularSpeed = 8 * dt;
 
 #ifdef PLATFORM_ANDROID
-  Controls.Update(playerObj, thrust, dt);
+  Controls.Update(Player.Phy, thrust, dt);
 #endif
 
   // Handling Inputs
-  // Owo, whats this?? basically since we are now using dynamic resolutions so
-  // it won't look bad in fullscreen, it would be convinent to allow players to
-  // zoom in to get a clear view, while making sure they don't zoom out of
-  // default 1 (b/w 0 and 1) in order to get benifits
+
+  // Zoom handling.
   Cam.zoom +=
       GetMouseWheelMove() * (IsKeyDown(KEY_LEFT_CONTROL) ? 1.0f / 2 : 1.0f / 8);
   if (Cam.zoom < 1)
@@ -58,31 +55,29 @@ void SceneGame::Update(float dt) {
 
   // Dangan
   if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
-    Bullets::Shoot(playerObj, Space);
+    Bullets::Shoot(Player.Phy, Space);
     PlaySound(shootSound);
   }
 
   // useful while testing.
   if (IsKeyPressed(KEY_X))
-    playerObj->setVelocity(cpvzero);
+    Player.Phy->setVelocity(cpvzero);
 
   if (IsKeyDown(KEY_W))
-    playerObj->applyForce({thrust, 0});
-  if (IsKeyDown(KEY_S))
-    playerObj->applyForce({-thrust, 0});
-  if (IsKeyDown(KEY_A))
-    playerObj->setAngle(angle - angularSpeed);
-  if (IsKeyDown(KEY_D))
-    playerObj->setAngle(angle + angularSpeed);
+    Player.Phy->applyForce({0, -thrust});
+  Vector2 Mouse = GetScreenToWorld2D(GetMousePosition(), Cam);
+  cpVect playerPos = Player.Phy->getPosition();
+  angle = atan2(Mouse.y - playerPos.y, Mouse.x - playerPos.x) + PI/2;
 
   Cam.target = Player.GetCenter();
-  playerObj->setAngularVelocity(0);
+  Player.Phy->setAngle(angle);
+  Player.Phy->setAngularVelocity(0);
   cpSpaceStep(Space, dt);
 
   Bullets::Maintain(Cam);
   Stars::Maintain(Cam);
   Asteroids::Maintain(&explosion);
-  Enemies::Maintain(&explosion, playerObj->getPosition());
+  Enemies::Maintain(&explosion, Player.Phy->getPosition());
 
   if (GetRandomValue(0, 100) < 10 * dt) {
     Asteroids::Spawn(Cam, Space);
@@ -100,8 +95,7 @@ void SceneGame::Draw() {
 
   Stars::Draw();
 
-  Pebble::Draw(&Player);
-  DrawCircleLinesV(Player,300, RED);
+  Player.Draw();
 
   Bullets::Draw();
   Asteroids::Draw();
@@ -109,11 +103,7 @@ void SceneGame::Draw() {
 
   EndMode2D();
 
-  DrawText(TextFormat("Co-ordinates: (%d, %d)", (int)Player.x, (int)Player.y),
-           64, 64, 32, WHITE);
-
-  int dist = Vector2Length(Player); // distance from origin
-  DrawText(TextFormat("Distance: %d", dist), 64, 128, 32, WHITE);
+  DrawFPS(32, 32);
 
 #ifdef PLATFORM_ANDROID
   Controls.Draw();

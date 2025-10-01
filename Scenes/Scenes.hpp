@@ -31,8 +31,7 @@ struct SceneGame : Frax::Scene {
   cpSpace *Space;
 
   Camera2D Cam;
-  Frax::Rect Player;
-  Pebble::Obj* playerObj;
+  Entity Player;
 
   SceneGame();
 
