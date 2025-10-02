@@ -30,15 +30,16 @@ SceneGame::SceneGame() : Player({0, 0, 32, 32}, "Assets/Chiaki Ship.png") {
       Space, (int)CollisionTypes::Bullet, (int)CollisionTypes::Asteroid);
   handlerBulletAsteroid->beginFunc = bulletSomethingBegin;
 
-  // auto handlerBulletEnemy = cpSpaceAddCollisionHandler(
-  //     Space, (int)CollisionTypes::Bullet, (int)CollisionTypes::Enemy);
-  // handlerBulletEnemy->beginFunc = bulletSomethingBegin;
+  auto handlerBulletEnemy = cpSpaceAddCollisionHandler(
+      Space, (int)CollisionTypes::Bullet, (int)CollisionTypes::Enemy);
+  handlerBulletEnemy->beginFunc = bulletSomethingBegin;
 
   auto handlerBulletPlayer = cpSpaceAddCollisionHandler(
       Space, (int)CollisionTypes::Bullet, (int)CollisionTypes::Player);
   handlerBulletPlayer->beginFunc = bulletSomethingBegin;
 
   Discord::Update("A Danganronpa Fan Game <3", "BEING EXECUTED HAHAHA");
+
 }
 
 void SceneGame::Update(float dt) {
@@ -79,9 +80,13 @@ void SceneGame::Update(float dt) {
   cpVect playerPos = Player.Phy->getPosition();
   angle = atan2(Mouse.y - playerPos.y, Mouse.x - playerPos.x) + PI / 2;
 
-  if (Player.Phy->ShouldDelete) {
+  if (Player.Phy->Collision) {
     Player.Health--;
-    Player.Phy->ShouldDelete = false;
+    Player.Phy->Collision = false;
+
+    if (Player.Health <= 0) {
+      KeepRunning = false;
+    }
   }
 
   if (Player.cooldown > 0.0f)
@@ -115,21 +120,22 @@ void SceneGame::Draw() {
   Player.Draw();
 
   Bullets::Draw();
-  Asteroids::Draw();
   Enemies::Draw();
 
+  Asteroids::Draw();
+
   // DrawCircleLinesV(Player.GetCenter(), 200, RED);
-  auto pos = Player.Phy->getPosition();
-  DrawRectangleLines(pos.x - 16, pos.y - 16, 32, 32, RED);
 
   EndMode2D();
 
   DrawFPS(32, 32);
-  DrawText(TextFormat("Health %f", Player.Health), 32, 64, 32, WHITE);
+  DrawText(TextFormat("Health %d", (int)Player.Health), 32, 64, 32, WHITE);
 
 #ifdef PLATFORM_ANDROID
   Controls.Draw();
 #endif
 }
 
-SceneGame::~SceneGame() {}
+SceneGame::~SceneGame() {
+  
+}

@@ -31,7 +31,7 @@ void Maintain(Sound *explosion) {
   for (int i = 0; i < (int)list.size(); i++) {
     auto &asteroid = list[i];
 
-    if (!asteroid->Phy->ShouldDelete)
+    if (!asteroid->Phy->Collision)
       continue;
 
     asteroid->Health--;

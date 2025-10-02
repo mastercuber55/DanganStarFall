@@ -14,8 +14,8 @@ cpBool bulletSomethingBegin(cpArbiter *arb, cpSpace *space, void *data) {
   auto Bullet = static_cast<Pebble::Obj *>(cpShapeGetUserData(sBullet));
   auto Something = static_cast<Pebble::Obj *>(cpShapeGetUserData(sSomething));
 
-  // Bullet->ShouldDelete = true;
-  Something->ShouldDelete = true;
+  Bullet->Collision = true;
+  Something->Collision = true;
 
-  return cpTrue;
+  return cpFalse;
 }

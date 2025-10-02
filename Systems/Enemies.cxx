@@ -11,8 +11,11 @@ void Spawn(Camera2D &cam, cpSpace *space) {
   Entity *Enemy =
       new Entity(Rectangle{pos.x, pos.y, 64, 64}, "Assets/Monokuma.png");
 
+  Enemy->Health = 10;
+
   Enemy->Phy = new Pebble::Obj(space, {pos.x, pos.y}, {32, 32}, 32);
   Enemy->Phy->setCollisionType((int)CollisionTypes::Enemy);
+
   list.push_back(Enemy);
 }
 
@@ -20,13 +23,18 @@ void Maintain(Sound *explosion, cpVect player, cpSpace *space, float dt) {
   for (int i = 0; i < (int)list.size(); i++) {
     auto &Enemy = list[i];
 
-    if (Enemy->Phy->ShouldDelete) {
-      delete Enemy->Phy;
-      delete Enemy;
-      list.erase(list.begin() + i);
-      --i;
-      PlaySound(*explosion);
-      return;
+    if (Enemy->Phy->Collision) {
+      Enemy->Phy->Collision = false;
+      Enemy->Health--;
+      Enemy->Tint = {255, 255, 255, static_cast<unsigned char>(22.5f * Enemy->Health)};
+      if (Enemy->Health <= 0) {
+        delete Enemy->Phy;
+        delete Enemy;
+        list.erase(list.begin() + i);
+        --i;
+        PlaySound(*explosion);
+        return;
+      }
     }
 
     if (Enemy->cooldown > 0.0f)
