@@ -9,7 +9,8 @@
 enum class CollisionTypes : cpCollisionType { None, Player, Bullet, Asteroid, Enemy };
 
 struct Entity : Frax::Rect {
-  float Health;
+  float Health = 100;
+  float cooldown = 0;
   Pebble::Obj *Phy;
   void Draw();
 
@@ -17,30 +18,26 @@ struct Entity : Frax::Rect {
 };
 
 namespace Asteroids {
-extern std::vector<Entity*> list;
 void Spawn(Camera2D, cpSpace *);
 void Maintain(Sound *);
 void Draw();
 } // namespace Asteroids
 
 namespace Bullets {
-extern std::vector<Pebble::Obj *> list;
 void Shoot(Pebble::Obj *playerObj, cpSpace *space);
 void Maintain(Camera2D &);
 void Draw();
 } // namespace Bullets
 
 namespace Stars {
-extern std::vector<Vector2> list;
 void Init(Camera2D &);
 void Maintain(Camera2D &);
 void Draw();
 } // namespace Stars
 
 namespace Enemies {
-extern std::vector<Entity*> list;
 void Spawn(Camera2D &, cpSpace *);
-void Maintain(Sound*, cpVect player);
+void Maintain(Sound*, cpVect player, cpSpace*, float dt);
 void Draw();
 }
 

@@ -1,5 +1,7 @@
 #include "Scenes.hpp"
+#include <chipmunk/cpPolyShape.h>
 #include <chipmunk/cpSpace.h>
+#include <cstdio>
 #include <raylib.h>
 #define RAYMATH_IMPLEMENTATION
 #include <raymath.h>
@@ -10,6 +12,8 @@ SceneGame::SceneGame() : Player({0, 0, 32, 32}, "Assets/Chiaki Ship.png") {
 
   Player.Phy = new Pebble::Obj(Space, {4, 4}, {32, 32}, 16);
   Player.Phy->setCollisionType((int)CollisionTypes::Player);
+  Player.cooldown = 0.0f;
+  Player.Health = 100;
 
   Cam = {.offset = {Frax::ScreenSize.x / 2, Frax::ScreenSize.y / 2},
          .target = Player,
@@ -26,9 +30,13 @@ SceneGame::SceneGame() : Player({0, 0, 32, 32}, "Assets/Chiaki Ship.png") {
       Space, (int)CollisionTypes::Bullet, (int)CollisionTypes::Asteroid);
   handlerBulletAsteroid->beginFunc = bulletSomethingBegin;
 
-  auto handlerBulletEnemy = cpSpaceAddCollisionHandler(
-      Space, (int)CollisionTypes::Bullet, (int)CollisionTypes::Enemy);
-  handlerBulletEnemy->beginFunc = bulletSomethingBegin;
+  // auto handlerBulletEnemy = cpSpaceAddCollisionHandler(
+  //     Space, (int)CollisionTypes::Bullet, (int)CollisionTypes::Enemy);
+  // handlerBulletEnemy->beginFunc = bulletSomethingBegin;
+
+  auto handlerBulletPlayer = cpSpaceAddCollisionHandler(
+      Space, (int)CollisionTypes::Bullet, (int)CollisionTypes::Player);
+  handlerBulletPlayer->beginFunc = bulletSomethingBegin;
 
   Discord::Update("A Danganronpa Fan Game <3", "BEING EXECUTED HAHAHA");
 }
@@ -54,7 +62,8 @@ void SceneGame::Update(float dt) {
     Cam.zoom = 1;
 
   // Dangan
-  if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
+  if (IsMouseButtonDown(MOUSE_LEFT_BUTTON) && Player.cooldown <= 0) {
+    Player.cooldown = 0.25f;
     Bullets::Shoot(Player.Phy, Space);
     PlaySound(shootSound);
   }
@@ -65,10 +74,18 @@ void SceneGame::Update(float dt) {
 
   if (IsKeyDown(KEY_W))
     Player.Phy->applyForce({0, -thrust});
+
   Vector2 Mouse = GetScreenToWorld2D(GetMousePosition(), Cam);
   cpVect playerPos = Player.Phy->getPosition();
-  angle = atan2(Mouse.y - playerPos.y, Mouse.x - playerPos.x) + PI/2;
+  angle = atan2(Mouse.y - playerPos.y, Mouse.x - playerPos.x) + PI / 2;
 
+  if (Player.Phy->ShouldDelete) {
+    Player.Health--;
+    Player.Phy->ShouldDelete = false;
+  }
+
+  if (Player.cooldown > 0.0f)
+    Player.cooldown -= dt;
   Cam.target = Player.GetCenter();
   Player.Phy->setAngle(angle);
   Player.Phy->setAngularVelocity(0);
@@ -77,7 +94,7 @@ void SceneGame::Update(float dt) {
   Bullets::Maintain(Cam);
   Stars::Maintain(Cam);
   Asteroids::Maintain(&explosion);
-  Enemies::Maintain(&explosion, Player.Phy->getPosition());
+  Enemies::Maintain(&explosion, Player.Phy->getPosition(), Space, dt);
 
   if (GetRandomValue(0, 100) < 10 * dt) {
     Asteroids::Spawn(Cam, Space);
@@ -101,9 +118,14 @@ void SceneGame::Draw() {
   Asteroids::Draw();
   Enemies::Draw();
 
+  // DrawCircleLinesV(Player.GetCenter(), 200, RED);
+  auto pos = Player.Phy->getPosition();
+  DrawRectangleLines(pos.x - 16, pos.y - 16, 32, 32, RED);
+
   EndMode2D();
 
   DrawFPS(32, 32);
+  DrawText(TextFormat("Health %f", Player.Health), 32, 64, 32, WHITE);
 
 #ifdef PLATFORM_ANDROID
   Controls.Draw();
