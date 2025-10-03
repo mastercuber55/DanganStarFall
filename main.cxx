@@ -7,7 +7,7 @@ int main() {
   Frax::Init("DanganStarFall");
 
   Discord::Init();
-  
+
   SceneGame().Run();
 
   Discord::Close();

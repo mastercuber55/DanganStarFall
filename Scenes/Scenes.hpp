@@ -24,11 +24,11 @@ struct SceneGame : Frax::Scene {
 #ifdef PLATFORM_ANDROID
   SceneTouchControls Controls;
 #endif
-
+  
   Sound shootSound;
   Sound explosion;
 
-  int Kills;
+  int Kills = 0;
 
   cpSpace *Space;
 
@@ -39,7 +39,6 @@ struct SceneGame : Frax::Scene {
 
   void Update(float dt) override;
   void Draw() override;
-  bool ShouldClose() override;
 
   ~SceneGame();
 };

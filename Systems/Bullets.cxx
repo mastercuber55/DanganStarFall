@@ -14,6 +14,8 @@ void Shoot(Pebble::Obj *obj, cpSpace *space) {
   cpVect pos = cpvadd(obj->getPosition(), offset);
 
   auto bullet = new Pebble::Obj(space, pos, cpVect{1, 1}, 1);
+  
+  
   bullet->setAngle(angle);
   bullet->applyImpulse({0, -pow(2, 9)});
   obj->applyImpulse({0, pow(2, 9)});

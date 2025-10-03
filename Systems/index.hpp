@@ -13,6 +13,7 @@ struct Entity : Frax::Rect {
   void Draw();
 
   using Rect::Rect;
+  ~Entity();
 };
 
 namespace Asteroids {

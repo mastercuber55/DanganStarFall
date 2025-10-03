@@ -13,7 +13,7 @@ SceneGame::SceneGame() : Player({0, 0, 32, 32}, "Assets/Chiaki Ship.png") {
   Player.Phy = new Pebble::Obj(Space, {4, 4}, {32, 32}, 16);
   Player.Phy->setCollisionType((int)CollisionTypes::Player);
   Player.cooldown = 0.0f;
-  Player.Health = 100;
+  Player.Health = 25;
 
   Cam = {.offset = {Frax::ScreenSize.x / 2, Frax::ScreenSize.y / 2},
          .target = Player,
@@ -39,7 +39,6 @@ SceneGame::SceneGame() : Player({0, 0, 32, 32}, "Assets/Chiaki Ship.png") {
   handlerBulletPlayer->beginFunc = bulletSomethingBegin;
 
   Discord::Update("A Danganronpa Fan Game <3", "BEING EXECUTED HAHAHA");
-
 }
 
 void SceneGame::Update(float dt) {
@@ -54,49 +53,53 @@ void SceneGame::Update(float dt) {
 
   // Handling Inputs
 
-  // Zoom handling.
-  Cam.zoom +=
-      GetMouseWheelMove() * (IsKeyDown(KEY_LEFT_CONTROL) ? 1.0f / 2 : 1.0f / 8);
-  if (Cam.zoom < 1)
-    Cam.zoom = 1;
-  if (IsKeyPressed(KEY_Z))
-    Cam.zoom = 1;
+  if (Player.Health > 0) {
+    // Zoom handling.
+    Cam.zoom += GetMouseWheelMove() *
+                (IsKeyDown(KEY_LEFT_CONTROL) ? 1.0f / 2 : 1.0f / 8);
+    if (Cam.zoom < 1)
+      Cam.zoom = 1;
+    if (IsKeyPressed(KEY_Z))
+      Cam.zoom = 1;
 
-  // Dangan
-  if (IsMouseButtonDown(MOUSE_LEFT_BUTTON) && Player.cooldown <= 0) {
-    Player.cooldown = 0.25f;
-    Bullets::Shoot(Player.Phy, Space);
-    PlaySound(shootSound);
+    // Dangan
+    if (IsMouseButtonDown(MOUSE_LEFT_BUTTON) && Player.cooldown <= 0) {
+      Player.cooldown = 0.25f;
+      Bullets::Shoot(Player.Phy, Space);
+      PlaySound(shootSound);
+    }
+
+    // useful while testing.
+    if (IsKeyPressed(KEY_X))
+      Player.Phy->setVelocity(cpvzero);
+
+    if (IsKeyDown(KEY_W))
+      Player.Phy->applyForce({0, -thrust});
+
+    Vector2 Mouse = GetScreenToWorld2D(GetMousePosition(), Cam);
+    cpVect playerPos = Player.Phy->getPosition();
+    angle = atan2(Mouse.y - playerPos.y, Mouse.x - playerPos.x) + PI / 2;
+
+    if (Player.Phy->Collision) {
+      Player.Health--;
+      if(Player.Health == 0) PlaySound(explosion);
+      Player.Phy->Collision = false;
+    }
+
+    if (Player.cooldown > 0.0f)
+      Player.cooldown -= dt;
+    Cam.target = Player.GetCenter();
+    Player.Phy->setAngle(angle);
+    Player.Phy->setAngularVelocity(0);
+
+    Bullets::Maintain(Cam);
+    Stars::Maintain(Cam);
+    Asteroids::Maintain(&explosion);
+    Kills +=
+        Enemies::Maintain(&explosion, Player.Phy->getPosition(), Space, dt);
   }
 
-  // useful while testing.
-  if (IsKeyPressed(KEY_X))
-    Player.Phy->setVelocity(cpvzero);
-
-  if (IsKeyDown(KEY_W))
-    Player.Phy->applyForce({0, -thrust});
-
-  Vector2 Mouse = GetScreenToWorld2D(GetMousePosition(), Cam);
-  cpVect playerPos = Player.Phy->getPosition();
-  angle = atan2(Mouse.y - playerPos.y, Mouse.x - playerPos.x) + PI / 2;
-
-  if (Player.Phy->Collision) {
-    Player.Health--;
-    Player.Phy->Collision = false;
-
-  }
-
-  if (Player.cooldown > 0.0f)
-    Player.cooldown -= dt;
-  Cam.target = Player.GetCenter();
-  Player.Phy->setAngle(angle);
-  Player.Phy->setAngularVelocity(0);
   cpSpaceStep(Space, dt);
-
-  Bullets::Maintain(Cam);
-  Stars::Maintain(Cam);
-  Asteroids::Maintain(&explosion);
-  Kills += Enemies::Maintain(&explosion, Player.Phy->getPosition(), Space, dt);
 
   if (GetRandomValue(0, 100) < 10 * dt) {
     Asteroids::Spawn(Cam, Space);
@@ -114,7 +117,8 @@ void SceneGame::Draw() {
 
   Stars::Draw();
 
-  Player.Draw();
+  if (Player.Health > 0)
+    Player.Draw();
 
   Bullets::Draw();
   Enemies::Draw();
@@ -128,18 +132,13 @@ void SceneGame::Draw() {
   DrawFPS(32, 32);
   DrawText(TextFormat("Health %d", (int)Player.Health), 32, 64, 32, WHITE);
 
+  if (Player.Health <= 0)
+    DrawText(TextFormat("You Died. Kills: %d", Kills), Frax::ScreenSize.x/2 - 164, Frax::ScreenSize.y/2 - 64,
+             48, RED);
+
 #ifdef PLATFORM_ANDROID
   Controls.Draw();
 #endif
 }
 
-bool SceneGame::ShouldClose() {
-  if (Player.Health > 0 && !WindowShouldClose())
-    return false;
-  ReturnData = Kills;
-  return true;
-}
-
-SceneGame::~SceneGame() {
-  
-}
+SceneGame::~SceneGame() {}

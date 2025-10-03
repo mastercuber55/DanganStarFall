@@ -14,3 +14,7 @@ void Entity::Draw() {
 
   Rect::Draw();
 }
+
+Entity::~Entity() {
+  // delete Phy;
+}
