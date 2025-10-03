@@ -84,9 +84,6 @@ void SceneGame::Update(float dt) {
     Player.Health--;
     Player.Phy->Collision = false;
 
-    if (Player.Health <= 0) {
-      KeepRunning = false;
-    }
   }
 
   if (Player.cooldown > 0.0f)
@@ -99,7 +96,7 @@ void SceneGame::Update(float dt) {
   Bullets::Maintain(Cam);
   Stars::Maintain(Cam);
   Asteroids::Maintain(&explosion);
-  Enemies::Maintain(&explosion, Player.Phy->getPosition(), Space, dt);
+  Kills += Enemies::Maintain(&explosion, Player.Phy->getPosition(), Space, dt);
 
   if (GetRandomValue(0, 100) < 10 * dt) {
     Asteroids::Spawn(Cam, Space);
@@ -134,6 +131,13 @@ void SceneGame::Draw() {
 #ifdef PLATFORM_ANDROID
   Controls.Draw();
 #endif
+}
+
+bool SceneGame::ShouldClose() {
+  if (Player.Health > 0 && !WindowShouldClose())
+    return false;
+  ReturnData = Kills;
+  return true;
 }
 
 SceneGame::~SceneGame() {

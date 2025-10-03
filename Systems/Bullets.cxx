@@ -8,8 +8,8 @@ void Shoot(Pebble::Obj *obj, cpSpace *space) {
   cpFloat angle = obj->getAngle();
 
   float safetyMargin = 2.0f;     // extra distance to avoid collision
-  cpVect offset = cpv((obj->size.x/2 + safetyMargin) * cosf(angle - PI/2),
-                      (obj->size.x/2 + safetyMargin) * sinf(angle - PI/2));
+  cpVect offset = cpv((obj->Size.x/2 + safetyMargin) * cosf(angle - PI/2),
+                      (obj->Size.x/2 + safetyMargin) * sinf(angle - PI/2));
 
   cpVect pos = cpvadd(obj->getPosition(), offset);
 

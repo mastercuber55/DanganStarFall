@@ -1,9 +1,7 @@
 // #define ENABLE_FRAX_DEBUG
 #include <Frax.hpp>
-#include <chipmunk/chipmunk_types.h>
 #include <discord_rpc.h>
 #include <pebble.hpp>
-#include <raylib.h>
 #include <vector>
 
 enum class CollisionTypes : cpCollisionType { None, Player, Bullet, Asteroid, Enemy };
@@ -37,7 +35,7 @@ void Draw();
 
 namespace Enemies {
 void Spawn(Camera2D &, cpSpace *);
-void Maintain(Sound*, cpVect player, cpSpace*, float dt);
+int Maintain(Sound*, cpVect player, cpSpace*, float dt);
 void Draw();
 }
 

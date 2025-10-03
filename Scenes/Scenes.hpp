@@ -28,6 +28,8 @@ struct SceneGame : Frax::Scene {
   Sound shootSound;
   Sound explosion;
 
+  int Kills;
+
   cpSpace *Space;
 
   Camera2D Cam;
@@ -37,6 +39,7 @@ struct SceneGame : Frax::Scene {
 
   void Update(float dt) override;
   void Draw() override;
+  bool ShouldClose() override;
 
   ~SceneGame();
 };

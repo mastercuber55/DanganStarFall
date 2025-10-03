@@ -19,7 +19,10 @@ void Spawn(Camera2D &cam, cpSpace *space) {
   list.push_back(Enemy);
 }
 
-void Maintain(Sound *explosion, cpVect player, cpSpace *space, float dt) {
+int Maintain(Sound *explosion, cpVect player, cpSpace *space, float dt) {
+
+  int killed = 0;
+
   for (int i = 0; i < (int)list.size(); i++) {
     auto &Enemy = list[i];
 
@@ -28,12 +31,13 @@ void Maintain(Sound *explosion, cpVect player, cpSpace *space, float dt) {
       Enemy->Health--;
       Enemy->Tint = {255, 255, 255, static_cast<unsigned char>(22.5f * Enemy->Health)};
       if (Enemy->Health <= 0) {
+        killed++;
         delete Enemy->Phy;
         delete Enemy;
         list.erase(list.begin() + i);
         --i;
         PlaySound(*explosion);
-        return;
+        return killed;
       }
     }
 
@@ -69,6 +73,7 @@ void Maintain(Sound *explosion, cpVect player, cpSpace *space, float dt) {
     Enemy->cooldown = 0.25f;
     Bullets::Shoot(Enemy->Phy, space);
   }
+  return killed;
 }
 
 void Draw() {

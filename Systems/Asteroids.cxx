@@ -1,6 +1,4 @@
 #include "index.hpp"
-#include <algorithm>
-#include <memory>
 #include <raylib.h>
 
 namespace Asteroids {
