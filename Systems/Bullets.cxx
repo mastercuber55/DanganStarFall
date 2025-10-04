@@ -1,5 +1,4 @@
 #include "index.hpp"
-#include <chipmunk/chipmunk_types.h>
 
 namespace Bullets {
 std::vector<Pebble::Obj *> list;

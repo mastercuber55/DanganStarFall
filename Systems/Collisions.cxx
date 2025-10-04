@@ -1,8 +1,4 @@
 #include "index.hpp"
-#include <chipmunk/chipmunk.h>
-#include <chipmunk/chipmunk_types.h>
-#include <chipmunk/cpArbiter.h>
-#include <chipmunk/cpShape.h>
 #include <raylib.h>
 
 cpBool bulletSomethingBegin(cpArbiter *arb, cpSpace *space, void *data) {

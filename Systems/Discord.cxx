@@ -74,13 +74,11 @@ void Discord::Close() { Discord_Shutdown(); }
 
 void Discord::Callbacks() { Discord_RunCallbacks(); }
 #else
-void Discord::Init() {
-}
+void Discord::Init() {}
 
-void Discord::Update(const std::string &details, const std::string &state) {
-}
+void Discord::Update(const std::string &details, const std::string &state) {}
 
-void Discord::Close() { Discord_Shutdown(); }
+void Discord::Close() {}
 
-void Discord::Callbacks() { Discord_RunCallbacks(); }
+void Discord::Callbacks() {}
 #endif

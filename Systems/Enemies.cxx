@@ -1,5 +1,4 @@
 #include "index.hpp"
-#include <chipmunk/chipmunk_types.h>
 #include <raylib.h>
 #include <raymath.h>
 

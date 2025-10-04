@@ -1,6 +1,4 @@
 #include "Scenes.hpp"
-#include <chipmunk/cpPolyShape.h>
-#include <chipmunk/cpSpace.h>
 #include <cstdio>
 #include <raylib.h>
 #define RAYMATH_IMPLEMENTATION

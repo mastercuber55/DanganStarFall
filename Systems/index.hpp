@@ -1,6 +1,5 @@
 // #define ENABLE_FRAX_DEBUG
 #include <Frax.hpp>
-#include <discord_rpc.h>
 #include <pebble.hpp>
 #include <vector>
 
@@ -42,7 +41,6 @@ void Draw();
 }
 
 namespace Discord {
-extern DiscordRichPresence rpc;
 void Init();
 void Update(const std::string& details, const std::string& state);
 void Close();
