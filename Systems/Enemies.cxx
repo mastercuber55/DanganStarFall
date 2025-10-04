@@ -32,7 +32,6 @@ int Maintain(Sound *explosion, cpVect player, cpSpace *space, float dt) {
       Enemy->Tint = {255, 255, 255, static_cast<unsigned char>(22.5f * 2.0f * Enemy->Health)};
       if (Enemy->Health <= 0) {
         killed++;
-        delete Enemy->Phy;
         delete Enemy;
         list.erase(list.begin() + i);
         --i;

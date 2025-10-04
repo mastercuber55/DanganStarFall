@@ -1,8 +1,9 @@
-#include "discord_rpc.h"
 #include "index.hpp"
+#include <string>
+#ifndef PLATFORM_ANDROID
+#include "discord_rpc.h"
 #include <chrono>
 #include <raylib.h>
-#include <string>
 
 void handlerReady(const DiscordUser *user) {
   TraceLog(LOG_INFO, "Connected to Discord %s", user->username);
@@ -58,10 +59,9 @@ void Discord::Init() {
   // rpc.matchSecret = "zxcvb";
   // rpc.joinSecret = "dfghjk";
   // rpc.spectateSecret = "tyul";
-  
 }
 
-void Discord::Update(const std::string& details, const std::string& state) {
+void Discord::Update(const std::string &details, const std::string &state) {
 
   rpc.details = details.c_str();
   rpc.state = state.c_str();
@@ -71,3 +71,16 @@ void Discord::Update(const std::string& details, const std::string& state) {
 }
 
 void Discord::Close() { Discord_Shutdown(); }
+
+void Discord::Callbacks() { Discord_RunCallbacks(); }
+#else
+void Discord::Init() {
+}
+
+void Discord::Update(const std::string &details, const std::string &state) {
+}
+
+void Discord::Close() { Discord_Shutdown(); }
+
+void Discord::Callbacks() { Discord_RunCallbacks(); }
+#endif

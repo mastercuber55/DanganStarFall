@@ -10,7 +10,7 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 # Add source files
 set(SOURCES
     main.cxx
-    Scenes/SceneTouchControls.cxx
+    Scenes/SceneAndroid.cxx
     Scenes/SceneGame.cxx
     Systems/Asteroids.cxx
     Systems/Bullets.cxx
@@ -38,7 +38,7 @@ target_include_directories(DanganStarFall PRIVATE
     ${CMAKE_SOURCE_DIR}/external/pebble 
 )
 
-# add_compile_definitions(PLATFORM_ANDROID)
+add_compile_definitions(PLATFORM_ANDROID)
 
 
 # Optional: enable compiler warnings

@@ -11,6 +11,7 @@ struct Entity : Frax::Rect {
   float cooldown = 0;
   Pebble::Obj *Phy;
   void Draw();
+  void DrawHitbox();
 
   using Rect::Rect;
   ~Entity();
@@ -45,6 +46,7 @@ extern DiscordRichPresence rpc;
 void Init();
 void Update(const std::string& details, const std::string& state);
 void Close();
+void Callbacks();
 } // namespace Discord
 
 cpBool bulletSomethingBegin(cpArbiter *, cpSpace *, void *data);

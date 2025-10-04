@@ -10,10 +10,10 @@ SceneGame::SceneGame() : Player({0, 0, 32, 32}, "Assets/Chiaki Ship.png") {
 
   Space = cpSpaceNew();
 
-  Player.Phy = new Pebble::Obj(Space, {4, 4}, {32, 32}, 16);
+  Player.Phy = new Pebble::Obj(Space, {0, 0}, {32, 32}, 16);
   Player.Phy->setCollisionType((int)CollisionTypes::Player);
   Player.cooldown = 0.0f;
-  Player.Health = 25;
+  Player.Health = 100;
 
   Cam = {.offset = {Frax::ScreenSize.x / 2, Frax::ScreenSize.y / 2},
          .target = Player,
@@ -63,7 +63,8 @@ void SceneGame::Update(float dt) {
       Cam.zoom = 1;
 
     // Dangan
-    if (IsMouseButtonDown(MOUSE_LEFT_BUTTON) && Player.cooldown <= 0) {
+    if (IsMouseButtonDown(MOUSE_LEFT_BUTTON) && Player.cooldown <= 0 &&
+        GetTouchPointCount() == 0) {
       Player.cooldown = 0.25f;
       Bullets::Shoot(Player.Phy, Space);
       PlaySound(shootSound);
@@ -106,7 +107,7 @@ void SceneGame::Update(float dt) {
     Enemies::Spawn(Cam, Space);
   }
 
-  Discord_RunCallbacks();
+  Discord::Callbacks();
 }
 
 void SceneGame::Draw() {
@@ -132,9 +133,11 @@ void SceneGame::Draw() {
   DrawFPS(32, 32);
   DrawText(TextFormat("Health %d", (int)Player.Health), 32, 64, 32, WHITE);
 
-  if (Player.Health <= 0)
-    DrawText(TextFormat("You Died. Kills: %d", Kills), Frax::ScreenSize.x/2 - 164, Frax::ScreenSize.y/2 - 64,
-             48, RED);
+  if (Player.Health <= 0) {
+    DrawText(TextFormat("You Died.\n Kills: %d", Kills),
+             Frax::ScreenSize.x / 2 - 96, Frax::ScreenSize.y / 2 - 64, 48,
+             RED);
+  }
 
 #ifdef PLATFORM_ANDROID
   Controls.Draw();

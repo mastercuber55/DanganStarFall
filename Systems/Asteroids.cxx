@@ -19,8 +19,7 @@ void Spawn(Camera2D cam, cpSpace *space) {
 
   Asteroid->Phy->setAngularVelocity(vel);
   Asteroid->Phy->setAngle(vel); // Reusing ig.
-  Asteroid->Phy->applyImpulse({vel * 10000, 0});
-
+  Asteroid->Phy->applyImpulse({vel * 10000, 0});  
   Asteroid->Phy->setCollisionType((int)CollisionTypes::Asteroid);
 
   list.push_back(Asteroid);
@@ -37,7 +36,6 @@ void Maintain(Sound *explosion) {
     if (asteroid->Health > 0)
       continue;
 
-    delete asteroid->Phy;
     delete asteroid;
     list.erase(list.begin() + i);
     --i;
