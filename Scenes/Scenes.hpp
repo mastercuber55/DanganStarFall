@@ -9,9 +9,13 @@ struct SceneTouchControls : Frax::Scene {
   Vector2 joyKnob;
   float joyRadius;
 
+  Vector2 BtnA;
+  Vector2 BtnB;
+  float btnRadius;
+
   SceneTouchControls();
 
-  void Update(Pebble::Obj* Player, float Force, float dt);
+  void Update(Entity* Player, float thrust, float dt, cpSpace* Space, Sound* shootSound);
   void Draw() override;
 
   ~SceneTouchControls();

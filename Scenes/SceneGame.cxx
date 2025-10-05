@@ -45,14 +45,13 @@ void SceneGame::Update(float dt) {
   float angle = Player.Phy->getAngle();
   float thrust = pow(2, 19) * dt;
 
-#ifdef PLATFORM_ANDROID
-  Controls.Update(Player.Phy, thrust, dt);
-#endif
-
   // Handling Inputs
 
   if (Player.Health > 0) {
-    // Zoom handling.
+#ifdef PLATFORM_ANDROID
+  Controls.Update(&Player, thrust, dt, Space, &shootSound);
+#else
+// Zoom handling.
     Cam.zoom += GetMouseWheelMove() *
                 (IsKeyDown(KEY_LEFT_CONTROL) ? 1.0f / 2 : 1.0f / 8);
     if (Cam.zoom < 1)
@@ -78,7 +77,8 @@ void SceneGame::Update(float dt) {
     Vector2 Mouse = GetScreenToWorld2D(GetMousePosition(), Cam);
     cpVect playerPos = Player.Phy->getPosition();
     angle = atan2(Mouse.y - playerPos.y, Mouse.x - playerPos.x) + PI / 2;
-
+    Player.Phy->setAngle(angle);
+#endif
     if (Player.Phy->Collision) {
       Player.Health--;
       if(Player.Health == 0) PlaySound(explosion);
@@ -88,7 +88,6 @@ void SceneGame::Update(float dt) {
     if (Player.cooldown > 0.0f)
       Player.cooldown -= dt;
     Cam.target = Player.GetCenter();
-    Player.Phy->setAngle(angle);
     Player.Phy->setAngularVelocity(0);
 
     Bullets::Maintain(Cam);
