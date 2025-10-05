@@ -31,7 +31,7 @@ void handleJoinRequest(const DiscordUser *request) {
   Discord_Respond(request->userId, DISCORD_REPLY_YES);
 }
 
-DiscordRichPresence Discord::rpc = {};
+static DiscordRichPresence rpc = {};
 
 static std::string APPLICATION_ID = "1422182414062714992";
 

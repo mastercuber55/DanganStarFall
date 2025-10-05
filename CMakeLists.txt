@@ -38,9 +38,6 @@ target_include_directories(DanganStarFall PRIVATE
     ${CMAKE_SOURCE_DIR}/external/pebble 
 )
 
-add_compile_definitions(PLATFORM_ANDROID)
-
-
 # Optional: enable compiler warnings
 if(MSVC)
     target_compile_options(${PROJECT_NAME} PRIVATE /W4 /WX -g)
