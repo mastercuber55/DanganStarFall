@@ -1,39 +1,17 @@
 #include "../Systems/index.hpp"
 #include <memory>
 
-#ifdef PLATFORM_ANDROID
-
-struct SceneTouchControls : Frax::Scene {
-
-  Vector2 joyBase;
-  Vector2 joyValue;
-  Vector2 joyKnob;
-  float joyRadius;
-
-  Vector2 BtnA;
-  Vector2 BtnB;
-  float btnRadius;
-
-  SceneTouchControls();
-
-  void Update(Entity *Player, float thrust, float dt, cpSpace *Space,
-              Sound *shootSound);
-  void Draw() override;
-
-  ~SceneTouchControls();
-};
-
-#endif
 
 struct SceneAsteroids;
 struct SceneBullets;
 struct SceneStars;
 struct SceneEnemies;
+struct SceneAndroid;
 
 struct SceneGame : Frax::Scene {
 
 #ifdef PLATFORM_ANDROID
-  SceneTouchControls Controls;
+  std::unique_ptr<SceneAndroid> Controls;
 #endif
 
   // Complex Child Scenes
@@ -59,6 +37,29 @@ struct SceneGame : Frax::Scene {
 
   ~SceneGame();
 };
+#ifdef PLATFORM_ANDROID
+struct SceneAndroid : Frax::Scene {
+
+  SceneGame* Parent;
+
+  Vector2 joyBase;
+  Vector2 joyValue;
+  Vector2 joyKnob;
+  float joyRadius;
+
+  Vector2 BtnA;
+  Vector2 BtnB;
+  float btnRadius;
+
+  SceneAndroid(SceneGame*);
+
+  void Update(float dt) override;
+  void Draw() override;
+
+  ~SceneAndroid();
+};
+
+#endif
 
 struct SceneAsteroids : Frax::Scene {
 

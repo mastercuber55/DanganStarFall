@@ -26,6 +26,9 @@ SceneGame::SceneGame() : Player({0, 0, 32, 32}, "Assets/Chiaki Ship.png") {
   stars = std::make_unique<SceneStars>(this);
   enemies = std::make_unique<SceneEnemies>(this);
 
+  #ifdef PLATFORM_ANDROID
+    Controls = std::make_unique<SceneAndroid>(this);
+  #endif
 
   auto handlerBulletAsteroid = cpSpaceAddCollisionHandler(
       Space, (int)CollisionTypes::Bullet, (int)CollisionTypes::Asteroid);
@@ -52,7 +55,7 @@ void SceneGame::Update(float dt) {
 
   if (Player.Health > 0) {
 #ifdef PLATFORM_ANDROID
-    Controls.Update(&Player, thrust, dt, Space, &shootSound);
+    Controls->Update(dt);
 #else
     // Zoom handling.
     Cam.zoom += GetMouseWheelMove() *
@@ -138,7 +141,7 @@ void SceneGame::Draw() {
   }
 
 #ifdef PLATFORM_ANDROID
-  Controls.Draw();
+  Controls->Draw();
 #endif
 }
 

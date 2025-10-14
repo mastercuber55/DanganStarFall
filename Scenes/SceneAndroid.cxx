@@ -1,9 +1,11 @@
 #include "Scenes.hpp"
 #include <raymath.h>
 
-// Did you know that Scenes can overlap and run concurrently???
 #ifdef PLATFORM_ANDROID
-SceneTouchControls::SceneTouchControls() {
+SceneAndroid::SceneAndroid(SceneGame* ptr) {
+
+    Parent = ptr;
+
   joyRadius = 64 * 3;
   joyBase = {static_cast<float>(joyRadius * 1.5), Frax::ScreenSize.y - joyRadius * 2};
   joyKnob = joyBase;
@@ -14,7 +16,7 @@ SceneTouchControls::SceneTouchControls() {
   BtnB = { Frax::ScreenSize.x - 256, Frax::ScreenSize.y - 128 - btnRadius};
 }
 
-void SceneTouchControls::Update(Entity* Player, float thrust, float dt, cpSpace* Space, Sound* shootSound) {
+void SceneAndroid::Update(float dt) {
     int touchCount = GetTouchPointCount();
     bool joystickActive = false;
     bool buttonActive = false;
@@ -37,7 +39,7 @@ void SceneTouchControls::Update(Entity* Player, float thrust, float dt, cpSpace*
             // instantly face joystick direction
             if (len > 5.0f) {
                 float angle = atan2f(diff.y, diff.x) + PI / 2;
-                Player->Phy->setAngle(angle);
+                Parent->Player.Phy->setAngle(angle);
             }
         }
 
@@ -46,12 +48,11 @@ void SceneTouchControls::Update(Entity* Player, float thrust, float dt, cpSpace*
             buttonActive = true;
 
             if (CheckCollisionPointCircle(touch, BtnA, btnRadius)) {
-                Player->Phy->applyForce({0, -thrust});
+                Parent->Player.Phy->applyForce({0, -pow(2, 19) * dt});
             }
-            else if (CheckCollisionPointCircle(touch, BtnB, btnRadius) && Player->cooldown <= 0) {
-                Player->cooldown = 0.25f;
-                Bullets::Shoot(Player->Phy, Space);
-                PlaySound(*shootSound);
+            else if (CheckCollisionPointCircle(touch, BtnB, btnRadius) && Parent->Player.cooldown <= 0) {
+                Parent->Player.cooldown = 0.25f;
+                Parent->bullets->Shoot(Parent->Player.Phy);
             }
         }
     }
@@ -63,7 +64,7 @@ void SceneTouchControls::Update(Entity* Player, float thrust, float dt, cpSpace*
     }
 }
 
-void SceneTouchControls::Draw() {
+void SceneAndroid::Draw() {
 
   DrawCircleLinesV(joyBase, joyRadius, WHITE);
   DrawCircleV(joyKnob, joyRadius / 2, WHITE);
@@ -72,5 +73,5 @@ void SceneTouchControls::Draw() {
   DrawCircleLinesV(BtnB, btnRadius, WHITE);
 }
 
-SceneTouchControls::~SceneTouchControls() {}
+SceneAndroid::~SceneAndroid() {}
 #endif
