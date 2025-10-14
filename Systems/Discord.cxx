@@ -68,9 +68,9 @@ void Discord::Update(const std::string &details, const std::string &state) {
   Discord_UpdatePresence(&rpc);
 }
 
-void Discord::Close() { Discord_Shutdown(); }
+inline void Discord::Close() { Discord_Shutdown(); }
 
-void Discord::Callbacks() { Discord_RunCallbacks(); }
+inline void Discord::Callbacks() { Discord_RunCallbacks(); }
 #else
 void Discord::Init() {}
 

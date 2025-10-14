@@ -1,7 +1,10 @@
 #include "index.hpp"
-#include <raylib.h>
 
 cpBool bulletSomethingBegin(cpArbiter *arb, cpSpace *space, void *data) {
+
+  (void)space;
+  (void)data;
+  
   cpShape *sBullet;
   cpShape *sSomething;
 
