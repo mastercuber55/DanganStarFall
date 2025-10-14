@@ -1,5 +1,6 @@
 #include "Scenes.hpp"
 #include <cstdio>
+#include <memory>
 #include <raylib.h>
 #define RAYMATH_IMPLEMENTATION
 #include <raymath.h>
@@ -17,12 +18,14 @@ SceneGame::SceneGame() : Player({0, 0, 32, 32}, "Assets/Chiaki Ship.png") {
          .target = Player,
          .rotation = 0.0f,
          .zoom = 1.0f};
-
-  shootSound = LoadSound("Assets/shoot.wav");
+  
   explosion = LoadSound("Assets/explosion.wav");
 
-  Stars::Init(Cam);
-  Asteroids::Spawn(Cam, Space);
+  asteroids = std::make_unique<SceneAsteroids>(this);
+  bullets = std::make_unique<SceneBullets>(this);
+  stars = std::make_unique<SceneStars>(this);
+  enemies = std::make_unique<SceneEnemies>(this);
+
 
   auto handlerBulletAsteroid = cpSpaceAddCollisionHandler(
       Space, (int)CollisionTypes::Bullet, (int)CollisionTypes::Asteroid);
@@ -49,9 +52,9 @@ void SceneGame::Update(float dt) {
 
   if (Player.Health > 0) {
 #ifdef PLATFORM_ANDROID
-  Controls.Update(&Player, thrust, dt, Space, &shootSound);
+    Controls.Update(&Player, thrust, dt, Space, &shootSound);
 #else
-// Zoom handling.
+    // Zoom handling.
     Cam.zoom += GetMouseWheelMove() *
                 (IsKeyDown(KEY_LEFT_CONTROL) ? 1.0f / 2 : 1.0f / 8);
     if (Cam.zoom < 1)
@@ -63,8 +66,7 @@ void SceneGame::Update(float dt) {
     if (IsMouseButtonDown(MOUSE_LEFT_BUTTON) && Player.cooldown <= 0 &&
         GetTouchPointCount() == 0) {
       Player.cooldown = 0.25f;
-      Bullets::Shoot(Player.Phy, Space);
-      PlaySound(shootSound);
+      bullets->Shoot(Player.Phy);
     }
 
     // useful while testing.
@@ -81,7 +83,8 @@ void SceneGame::Update(float dt) {
 #endif
     if (Player.Phy->Collision) {
       Player.Health--;
-      if(Player.Health == 0) PlaySound(explosion);
+      if (Player.Health == 0)
+        PlaySound(explosion);
       Player.Phy->Collision = false;
     }
 
@@ -90,18 +93,18 @@ void SceneGame::Update(float dt) {
     Cam.target = Player.GetCenter();
     Player.Phy->setAngularVelocity(0);
 
-    Bullets::Maintain(Cam);
-    Stars::Maintain(Cam);
-    Asteroids::Maintain(&explosion);
-    Kills +=
-        Enemies::Maintain(&explosion, Player.Phy->getPosition(), Space, dt);
+    bullets->Update(dt);
+    stars->Update(dt);
+    asteroids->Update(dt);
+    enemies->Update(dt);
+    Kills += enemies->FrameKills;
   }
 
   cpSpaceStep(Space, dt);
 
   if (GetRandomValue(0, 100) < 10 * dt) {
-    Asteroids::Spawn(Cam, Space);
-    Enemies::Spawn(Cam, Space);
+    asteroids->Spawn();
+    enemies->Spawn();
   }
 
   Discord::Callbacks();
@@ -113,15 +116,14 @@ void SceneGame::Draw() {
                          {19, 16, 25, 255}, {35, 31, 82, 255});
   BeginMode2D(Cam);
 
-  Stars::Draw();
+  stars->Draw();
 
   if (Player.Health > 0)
     Player.Draw();
 
-  Bullets::Draw();
-  Enemies::Draw();
-
-  Asteroids::Draw();
+  bullets->Draw();
+  enemies->Draw();
+  asteroids->Draw();
 
   // DrawCircleLinesV(Player.GetCenter(), 200, RED);
 
@@ -132,8 +134,7 @@ void SceneGame::Draw() {
 
   if (Player.Health <= 0) {
     DrawText(TextFormat("You Died.\n Kills: %d", Kills),
-             Frax::ScreenSize.x / 2 - 96, Frax::ScreenSize.y / 2 - 64, 48,
-             RED);
+             Frax::ScreenSize.x / 2 - 96, Frax::ScreenSize.y / 2 - 64, 48, RED);
   }
 
 #ifdef PLATFORM_ANDROID

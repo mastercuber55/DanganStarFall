@@ -2,7 +2,6 @@
 #include <string>
 #ifndef PLATFORM_ANDROID
 #include "discord_rpc.h"
-#include <chrono>
 #include <raylib.h>
 
 void handlerReady(const DiscordUser *user) {
@@ -65,7 +64,6 @@ void Discord::Update(const std::string &details, const std::string &state) {
 
   rpc.details = details.c_str();
   rpc.state = state.c_str();
-  // rpc.endTimestamp = time(0) + 5 * 60;
 
   Discord_UpdatePresence(&rpc);
 }

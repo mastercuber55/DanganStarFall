@@ -8,17 +8,10 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 # Add source files
-set(SOURCES
-    main.cxx
-    Scenes/SceneAndroid.cxx
-    Scenes/SceneGame.cxx
-    Systems/Asteroids.cxx
-    Systems/Bullets.cxx
-    Systems/Stars.cxx
-    Systems/Collisions.cxx
-    Systems/Discord.cxx
-    Systems/Enemies.cxx
-    Systems/Entity.cxx
+file(GLOB SOURCES
+    "*.cxx"
+    "Scenes/*.cxx"
+    "Systems/*.cxx"
 )
 
 # Add executable

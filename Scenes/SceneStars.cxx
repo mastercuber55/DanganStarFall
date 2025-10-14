@@ -1,18 +1,18 @@
-#include "index.hpp"
-#include <raylib.h>
+#include "Scenes.hpp"
 
-namespace Stars {
-std::vector<Vector2> list;
-void Init(Camera2D &cam) {
+SceneStars::SceneStars(SceneGame *ptr) {
+  Parent = ptr;
   for (int i = 0; i < 1000; i++) {
-    list.push_back(Frax::GetRandomPositionInside(cam));
+    list.push_back(Frax::GetRandomPositionInside(ptr->Cam));
   }
 }
-void Maintain(Camera2D &cam) {
+
+void SceneStars::Update(float dt) {
+  (void)dt;
   for (Vector2 &star : list) {
 
-    float dx = star.x - cam.target.x;
-    float dy = star.y - cam.target.y;
+    float dx = star.x - Parent->Cam.target.x;
+    float dy = star.y - Parent->Cam.target.y;
 
     if (dx < -Frax::ScreenSize.x / 2)
       star.x += Frax::ScreenSize.x;
@@ -24,8 +24,8 @@ void Maintain(Camera2D &cam) {
       star.y -= Frax::ScreenSize.y;
   }
 }
-void Draw() {
 
+void SceneStars::Draw() {
   int rand = GetRandomValue(0, 1);
   Color clr = WHITE;
 
@@ -36,4 +36,3 @@ void Draw() {
     DrawCircle(star.x, star.y, 1, clr);
   }
 }
-} // namespace Stars
