@@ -97,13 +97,6 @@ void SceneGame::Update(float dt) {
   // Updating physics simulation.
   cpSpaceStep(Space, dt);
 
-  // Telling child scenes to update.
-  bullets->Update(dt);
-  stars->Update(dt);
-  asteroids->Update(dt);
-  enemies->Update(dt);
-  Kills += enemies->FrameKills;
-
   // Random spawns
   if (GetRandomValue(0, 100) < 10 * dt) {
     asteroids->Spawn();
@@ -135,6 +128,15 @@ void SceneGame::Update(float dt) {
   }
 
   Cam.target = {(float)playerPos.x, (float)playerPos.y};
+
+  // Telling child scenes to update.
+  if (Player.Health > 0) {
+    bullets->Update(dt);
+    stars->Update(dt);
+    asteroids->Update(dt);
+    enemies->Update(dt);
+    Kills += enemies->FrameKills;
+  }
 
   Discord::Callbacks();
 }

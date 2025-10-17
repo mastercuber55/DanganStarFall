@@ -16,23 +16,17 @@ void SceneStars::Update(float dt) {
 
     if (dx < -Frax::ScreenSize.x / 2)
       star.x += Frax::ScreenSize.x;
-    if (dx > Frax::ScreenSize.x / 2)
+    else if (dx > Frax::ScreenSize.x / 2)
       star.x -= Frax::ScreenSize.x;
     if (dy < -Frax::ScreenSize.y / 2)
       star.y += Frax::ScreenSize.y;
-    if (dy > Frax::ScreenSize.y / 2)
+    else if (dy > Frax::ScreenSize.y / 2)
       star.y -= Frax::ScreenSize.y;
   }
 }
 
 void SceneStars::Draw() {
-  int rand = GetRandomValue(0, 1);
-  Color clr = WHITE;
-
-  if (rand == 0)
-    clr = {225, 247, 0, 255};
-
   for (auto &star : list) {
-    DrawCircle(star.x, star.y, 1, clr);
+    DrawCircle(star.x, star.y, 1, WHITE);
   }
 }
