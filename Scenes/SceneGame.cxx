@@ -18,7 +18,7 @@ SceneGame::SceneGame() : Player({0, 0, 32, 32}, "Assets/Chiaki Ship.png") {
          .target = Player,
          .rotation = 0.0f,
          .zoom = 1.0f};
-  
+
   explosion = LoadSound("Assets/explosion.wav");
 
   asteroids = std::make_unique<SceneAsteroids>(this);
@@ -26,9 +26,9 @@ SceneGame::SceneGame() : Player({0, 0, 32, 32}, "Assets/Chiaki Ship.png") {
   stars = std::make_unique<SceneStars>(this);
   enemies = std::make_unique<SceneEnemies>(this);
 
-  #ifdef PLATFORM_ANDROID
-    Controls = std::make_unique<SceneAndroid>(this);
-  #endif
+#ifdef PLATFORM_ANDROID
+  Controls = std::make_unique<SceneAndroid>(this);
+#endif
 
   auto handlerBulletAsteroid = cpSpaceAddCollisionHandler(
       Space, (int)CollisionTypes::Bullet, (int)CollisionTypes::Asteroid);
@@ -50,6 +50,7 @@ void SceneGame::Update(float dt) {
   // Preparing variables
   float angle = Player.Phy->getAngle();
   float thrust = pow(2, 19) * dt;
+  cpVect Ppos = Player.Phy->getPosition();
 
   // Handling Inputs
 
@@ -93,7 +94,6 @@ void SceneGame::Update(float dt) {
 
     if (Player.cooldown > 0.0f)
       Player.cooldown -= dt;
-    Cam.target = Player.GetCenter();
     Player.Phy->setAngularVelocity(0);
 
     bullets->Update(dt);
@@ -101,14 +101,37 @@ void SceneGame::Update(float dt) {
     asteroids->Update(dt);
     enemies->Update(dt);
     Kills += enemies->FrameKills;
+
+    if (fabs(Ppos.x) > 10000 || fabs(Ppos.y) > 10000) {
+
+      cpSpaceEachBody(
+          Space,
+          [](cpBody *body, void *data) {
+            cpVect shift = *(cpVect *)data;
+            cpVect pos = cpBodyGetPosition(body);
+            cpBodySetPosition(body, cpvsub(pos, shift));
+          },
+          &Ppos);
+
+      Cam.target.x -= Ppos.x;
+      Cam.target.y -= Ppos.y;
+
+      for (auto &star : stars->list) {
+        star.x -= Ppos.x;
+        star.y -= Ppos.y;
+      }
+    }
+    if (GetRandomValue(0, 100) < 10 * dt) {
+      asteroids->Spawn();
+      enemies->Spawn();
+    }
   }
 
   cpSpaceStep(Space, dt);
 
-  if (GetRandomValue(0, 100) < 10 * dt) {
-    asteroids->Spawn();
-    enemies->Spawn();
-  }
+  Ppos = Player.Phy->getPosition();
+
+  Cam.target = {(float)Ppos.x, (float)Ppos.y};
 
   Discord::Callbacks();
 }
