@@ -102,7 +102,7 @@ void SceneGame::Update(float dt) {
     enemies->Update(dt);
     Kills += enemies->FrameKills;
 
-    if (fabs(Ppos.x) > 10000 || fabs(Ppos.y) > 10000) {
+    if (fabs(Ppos.x) > 5000 || fabs(Ppos.y) > 5000) {
 
       cpSpaceEachBody(
           Space,
