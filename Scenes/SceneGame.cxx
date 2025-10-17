@@ -47,44 +47,41 @@ SceneGame::SceneGame() : Player({0, 0, 32, 32}, "Assets/Chiaki Ship.png") {
 
 void SceneGame::Update(float dt) {
 
-  // Preparing variables
-  float angle = Player.Phy->getAngle();
-  float thrust = pow(2, 19) * dt;
-  cpVect Ppos = Player.Phy->getPosition();
-
-  // Handling Inputs
-
+  // Handling input and control.
   if (Player.Health > 0) {
 #ifdef PLATFORM_ANDROID
     Controls->Update(dt);
 #else
-    // Zoom handling.
-    Cam.zoom += GetMouseWheelMove() *
-                (IsKeyDown(KEY_LEFT_CONTROL) ? 1.0f / 2 : 1.0f / 8);
-    if (Cam.zoom < 1)
-      Cam.zoom = 1;
+    // Zoom
+    Cam.zoom +=
+        GetMouseWheelMove() * (IsKeyDown(KEY_LEFT_CONTROL) ? 0.5f : 0.125f);
+    Cam.zoom = fmaxf(Cam.zoom, 1.0f);
     if (IsKeyPressed(KEY_Z))
-      Cam.zoom = 1;
+      Cam.zoom = 1.0f;
 
-    // Dangan
+    // Shooting
     if (IsMouseButtonDown(MOUSE_LEFT_BUTTON) && Player.cooldown <= 0 &&
         GetTouchPointCount() == 0) {
       Player.cooldown = 0.25f;
       bullets->Shoot(Player.Phy);
     }
 
-    // useful while testing.
+    // Debug / testing
     if (IsKeyPressed(KEY_X))
       Player.Phy->setVelocity(cpvzero);
 
     if (IsKeyDown(KEY_W))
-      Player.Phy->applyForce({0, -thrust});
+      Player.Phy->applyForce({0, -pow(2, 19) * dt});
 
-    Vector2 Mouse = GetScreenToWorld2D(GetMousePosition(), Cam);
+    // Aim player towards cursor
+    Vector2 mouseWorld = GetScreenToWorld2D(GetMousePosition(), Cam);
     cpVect playerPos = Player.Phy->getPosition();
-    angle = atan2(Mouse.y - playerPos.y, Mouse.x - playerPos.x) + PI / 2;
+    float angle =
+        atan2(mouseWorld.y - playerPos.y, mouseWorld.x - playerPos.x) + PI / 2;
     Player.Phy->setAngle(angle);
 #endif
+
+    // Collision / health
     if (Player.Phy->Collision) {
       Player.Health--;
       if (Player.Health == 0)
@@ -92,46 +89,52 @@ void SceneGame::Update(float dt) {
       Player.Phy->Collision = false;
     }
 
-    if (Player.cooldown > 0.0f)
+    if (Player.cooldown > 0)
       Player.cooldown -= dt;
     Player.Phy->setAngularVelocity(0);
-
-    bullets->Update(dt);
-    stars->Update(dt);
-    asteroids->Update(dt);
-    enemies->Update(dt);
-    Kills += enemies->FrameKills;
-
-    if (fabs(Ppos.x) > 5000 || fabs(Ppos.y) > 5000) {
-
-      cpSpaceEachBody(
-          Space,
-          [](cpBody *body, void *data) {
-            cpVect shift = *(cpVect *)data;
-            cpVect pos = cpBodyGetPosition(body);
-            cpBodySetPosition(body, cpvsub(pos, shift));
-          },
-          &Ppos);
-
-      Cam.target.x -= Ppos.x;
-      Cam.target.y -= Ppos.y;
-
-      for (auto &star : stars->list) {
-        star.x -= Ppos.x;
-        star.y -= Ppos.y;
-      }
-    }
-    if (GetRandomValue(0, 100) < 10 * dt) {
-      asteroids->Spawn();
-      enemies->Spawn();
-    }
   }
 
+  // Updating physics simulation.
   cpSpaceStep(Space, dt);
 
-  Ppos = Player.Phy->getPosition();
+  // Telling child scenes to update.
+  bullets->Update(dt);
+  stars->Update(dt);
+  asteroids->Update(dt);
+  enemies->Update(dt);
+  Kills += enemies->FrameKills;
 
-  Cam.target = {(float)Ppos.x, (float)Ppos.y};
+  // Random spawns
+  if (GetRandomValue(0, 100) < 10 * dt) {
+    asteroids->Spawn();
+    enemies->Spawn();
+  }
+
+  cpVect playerPos = Player.Phy->getPosition();
+
+  // Recentering the world if needed.
+  if (fabs(playerPos.x) > 5000 || fabs(playerPos.y) > 5000) {
+    cpSpaceEachBody(
+        Space,
+        [](cpBody *body, void *data) {
+          cpVect shift = *(cpVect *)data;
+          cpBodySetPosition(body, cpvsub(cpBodyGetPosition(body), shift));
+        },
+        &playerPos);
+
+    Cam.target.x -= playerPos.x;
+    Cam.target.y -= playerPos.y;
+
+    for (auto &star : stars->list) {
+      star.x -= playerPos.x;
+      star.y -= playerPos.y;
+    }
+
+    // Update playerPos after shift
+    playerPos = Player.Phy->getPosition();
+  }
+
+  Cam.target = {(float)playerPos.x, (float)playerPos.y};
 
   Discord::Callbacks();
 }
