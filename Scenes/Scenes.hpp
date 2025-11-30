@@ -1,6 +1,6 @@
 #include "../Systems/index.hpp"
 #include <memory>
-
+#include "discord-rpc.hpp"
 
 struct SceneAsteroids;
 struct SceneBullets;

@@ -17,18 +17,24 @@ file(GLOB SOURCES
 # Add executable
 add_executable(${PROJECT_NAME} ${SOURCES})
 
-target_include_directories(${PROJECT_NAME} PRIVATE /usr/include/DiscordRPC)
-target_link_libraries(${PROJECT_NAME} PRIVATE discord-rpc)
+set(BUILD_DEMOS OFF CACHE BOOL "" FORCE)
+add_subdirectory(external/pebble/external/chipmunk)
+
+add_subdirectory(external/discord-presence)
+# target_include_directories(${PROJECT_NAME} PRIVATE /usr/include/DiscordRPC)
+# target_link_libraries(${PROJECT_NAME} PRIVATE discord-rpc)
 
 find_package(raylib REQUIRED)
 target_link_libraries(${PROJECT_NAME} PRIVATE raylib)
 
-find_library(CHIPMUNK_LIB chipmunk REQUIRED)
-target_link_libraries(${PROJECT_NAME} PRIVATE ${CHIPMUNK_LIB} m)
+target_link_libraries(${PROJECT_NAME} PRIVATE chipmunk m)
+target_link_libraries(${PROJECT_NAME} PRIVATE discord-rpc m)
 
 target_include_directories(DanganStarFall PRIVATE 
     ${CMAKE_SOURCE_DIR}/external/FraxFramework
     ${CMAKE_SOURCE_DIR}/external/pebble 
+    ${CMAKE_SOURCE_DIR}/external/pebble/external/chipmunk/include
+    ${CMAKE_SOURCE_DIR}/external/discord-presence/include
 )
 
 # Optional: enable compiler warnings

@@ -1,4 +1,5 @@
 #include "Scenes.hpp"
+#include "discord-rpc.hpp"
 #include <cstdio>
 #include <memory>
 #include <raylib.h>
@@ -42,7 +43,11 @@ SceneGame::SceneGame() : Player({0, 0, 32, 32}, "Assets/Chiaki Ship.png") {
       Space, (int)CollisionTypes::Bullet, (int)CollisionTypes::Player);
   handlerBulletPlayer->beginFunc = bulletSomethingBegin;
 
-  Discord::Update("A Danganronpa Fan Game <3", "BEING EXECUTED HAHAHA");
+  discord::RPCManager::get()
+    .getPresence()
+      .setDetails("A Danganronpa Fan Game <3")
+      .setState("BEING EXECUTED HAHAHA")
+      .refresh();
 }
 
 void SceneGame::Update(float dt) {
@@ -137,8 +142,6 @@ void SceneGame::Update(float dt) {
     enemies->Update(dt);
     Kills += enemies->FrameKills;
   }
-
-  Discord::Callbacks();
 }
 
 void SceneGame::Draw() {
@@ -166,6 +169,7 @@ void SceneGame::Draw() {
   if (Player.Health <= 0) {
     DrawText(TextFormat("You Died.\n Kills: %d", Kills),
              Frax::ScreenSize.x / 2 - 96, Frax::ScreenSize.y / 2 - 64, 48, RED);
+             
   }
 
 #ifdef PLATFORM_ANDROID

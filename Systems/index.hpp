@@ -40,11 +40,4 @@ int Maintain(Sound*, cpVect player, cpSpace*, float dt);
 void Draw();
 }
 
-namespace Discord {
-void Init();
-void Update(const std::string& details, const std::string& state);
-void Close();
-void Callbacks();
-} // namespace Discord
-
 cpBool bulletSomethingBegin(cpArbiter *, cpSpace *, void *data);

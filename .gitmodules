@@ -4,3 +4,6 @@
 [submodule "external/pebble"]
 	path = external/pebble
 	url = https://github.com/mastercuber55/pebble.git
+[submodule "external/discord-presence"]
+	path = external/discord-presence
+	url = https://github.com/EclipseMenu/discord-presence
