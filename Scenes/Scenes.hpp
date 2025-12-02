@@ -15,6 +15,7 @@ struct SceneGame : Frax::Scene {
 #endif
 
   // Complex Child Scenes
+  // Using unique_ptr because they can only have one parent scene.
   std::unique_ptr<SceneAsteroids> asteroids;
   std::unique_ptr<SceneBullets> bullets;
   std::unique_ptr<SceneStars> stars;
@@ -24,6 +25,7 @@ struct SceneGame : Frax::Scene {
   Sound explosion;
 
   int Kills = 0;
+  float fuel = 100.0;
 
   cpSpace *Space;
 
@@ -32,8 +34,15 @@ struct SceneGame : Frax::Scene {
 
   SceneGame();
 
-  void Update(float dt) override;
+  void Update(const float &dt) override;
   void Draw() override;
+
+  void InitColliders();
+  
+  void InitPlayerAndCam();
+  void UpdatePlayer(const float &dt);
+
+  void RecenterWorld(cpVect& playerPos);
 
   ~SceneGame();
 };
@@ -53,7 +62,7 @@ struct SceneAndroid : Frax::Scene {
 
   SceneAndroid(SceneGame*);
 
-  void Update(float dt) override;
+  void Update(const float &dt) override;
   void Draw() override;
 
   ~SceneAndroid();
@@ -69,7 +78,7 @@ struct SceneAsteroids : Frax::Scene {
 
   void Spawn();
 
-  void Update(float dt) override;
+  void Update(const float &dt) override;
   void Draw() override;
 
   SceneAsteroids(SceneGame *);
@@ -83,7 +92,7 @@ struct SceneBullets : Frax::Scene {
 
   void Shoot(Pebble::Obj *obj);
 
-  void Update(float dt) override;
+  void Update(const float &dt) override;
   void Draw() override;
 
   SceneBullets(SceneGame *);
@@ -93,7 +102,7 @@ struct SceneStars : Frax::Scene {
   SceneGame *Parent;
   std::vector<Vector2> list;
 
-  void Update(float dt) override;
+  void Update(const float &dt) override;
   void Draw() override;
 
   SceneStars(SceneGame *);
@@ -105,7 +114,7 @@ struct SceneEnemies : Frax::Scene {
   int FrameKills;
 
   void Spawn();
-  void Update(float dt) override;
+  void Update(const float &dt) override;
   void Draw() override;
 
   SceneEnemies(SceneGame *);

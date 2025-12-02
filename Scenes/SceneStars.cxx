@@ -7,7 +7,7 @@ SceneStars::SceneStars(SceneGame *ptr) {
   }
 }
 
-void SceneStars::Update(float dt) {
+void SceneStars::Update(const float &dt) {
   (void)dt;
   for (Vector2 &star : list) {
 

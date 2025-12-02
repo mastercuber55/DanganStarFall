@@ -16,7 +16,7 @@ SceneAndroid::SceneAndroid(SceneGame* ptr) {
   BtnB = { Frax::ScreenSize.x - 256, Frax::ScreenSize.y - 128 - btnRadius};
 }
 
-void SceneAndroid::Update(float dt) {
+void SceneAndroid::Update(const float &dt) {
     int touchCount = GetTouchPointCount();
     bool joystickActive = false;
     bool buttonActive = false;

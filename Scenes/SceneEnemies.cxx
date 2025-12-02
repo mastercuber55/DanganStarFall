@@ -17,7 +17,7 @@ void SceneEnemies::Spawn() {
   list.push_back(Enemy);
 }
 
-void SceneEnemies::Update(float dt) {
+void SceneEnemies::Update(const float &dt) {
 
   FrameKills = 0;
 

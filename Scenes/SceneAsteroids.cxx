@@ -25,7 +25,7 @@ void SceneAsteroids::Spawn() {
   list.push_back(Asteroid);
 }
 
-void SceneAsteroids::Update(float dt) {
+void SceneAsteroids::Update(const float &dt) {
   (void)dt;
   for (int i = 0; i < (int)list.size(); i++) {
     auto &asteroid = list[i];

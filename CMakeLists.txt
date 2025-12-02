@@ -11,6 +11,7 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 file(GLOB SOURCES
     "*.cxx"
     "Scenes/*.cxx"
+    "Scenes/*/*.cxx"
     "Systems/*.cxx"
 )
 

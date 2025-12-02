@@ -32,14 +32,14 @@ void SceneBullets::Shoot(Pebble::Obj *shooter) {
   bullet->setVelocity(bulletVel);
 
   shooter->applyImpulse({0, static_cast<cpFloat>(pow(2, 9))});
-  PlaySound(shootSound);
+  // PlaySound(shootSound); so annoying aaa
 
   bullet->setCollisionType((int)CollisionTypes::Bullet);
 
   list.push_back(bullet);
 }
 
-void SceneBullets::Update(float dt) {
+void SceneBullets::Update(const float &dt) {
   (void)dt;
   for (int i = 0; i < (int)list.size(); i++) {
 
