@@ -1,8 +1,11 @@
-#include "../Scenes.hpp"
+#include "SceneGame.hpp"
+#include "raygui.h"
 
 SceneGame::SceneGame() : Player({0, 0, 32, 32}, "Assets/Chiaki Ship.png") {
 
   Space = cpSpaceNew();
+
+  GuiSetStyle(PROGRESSBAR, PROGRESS_PADDING, 0);
 
   this->InitPlayerAndCam();
 

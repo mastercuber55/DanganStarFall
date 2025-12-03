@@ -1,4 +1,6 @@
-#include "Scenes.hpp"
+#include "AllScenes.hpp"
+#include "../CollisionTypes.hpp"
+#include "../SceneGame.hpp"
 
 SceneAsteroids::SceneAsteroids(SceneGame *ptr) {
   Parent = ptr;

@@ -1,7 +1,0 @@
-#include "Scenes.hpp"
-#include "discord-rpc.hpp"
-#include <cstdio>
-#include <memory>
-#include <raylib.h>
-#define RAYMATH_IMPLEMENTATION
-#include <raymath.h>

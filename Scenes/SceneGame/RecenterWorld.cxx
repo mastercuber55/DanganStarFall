@@ -1,4 +1,4 @@
-#include "../Scenes.hpp"
+#include "SceneGame.hpp"
 
 void SceneGame::RecenterWorld(cpVect& playerPos) {
     cpSpaceEachBody(

@@ -1,4 +1,4 @@
-#include "../Scenes.hpp"
+#include "SceneGame.hpp"
 
 void SceneGame::Update(const float &dt) {
 

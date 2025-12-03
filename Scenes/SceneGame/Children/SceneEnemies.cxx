@@ -1,4 +1,6 @@
-#include "Scenes.hpp"
+#include "AllScenes.hpp"
+#include "../SceneGame.hpp"
+#include "../CollisionTypes.hpp"
 #include <raymath.h>
 
 SceneEnemies::SceneEnemies(SceneGame *ptr) { Parent = ptr; }

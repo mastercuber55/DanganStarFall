@@ -1,5 +1,6 @@
-#include "Scenes.hpp"
+#include "AllScenes.hpp"
 #include <raymath.h>
+#include "../SceneGame.hpp"
 
 #ifdef PLATFORM_ANDROID
 SceneAndroid::SceneAndroid(SceneGame* ptr) {

@@ -1,9 +1,10 @@
-#include "Scenes.hpp"
+#include "AllScenes.hpp"
+#include "../SceneGame.hpp"
 
 SceneStars::SceneStars(SceneGame *ptr) {
   Parent = ptr;
   for (int i = 0; i < 1000; i++) {
-    list.push_back(Frax::GetRandomPositionInside(ptr->Cam));
+    list[i] = Frax::GetRandomPositionInside(ptr->Cam);
   }
 }
 

@@ -4,15 +4,12 @@ project(DanganStarFall VERSION 1.0 LANGUAGES C CXX)
 # Set CXX standard
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 # Add source files
-file(GLOB SOURCES
+file(GLOB_RECURSE SOURCES
     "*.cxx"
     "Scenes/*.cxx"
-    "Scenes/*/*.cxx"
-    "Systems/*.cxx"
 )
 
 # Add executable
@@ -36,6 +33,7 @@ target_include_directories(DanganStarFall PRIVATE
     ${CMAKE_SOURCE_DIR}/external/pebble 
     ${CMAKE_SOURCE_DIR}/external/pebble/external/chipmunk/include
     ${CMAKE_SOURCE_DIR}/external/discord-presence/include
+    ${CMAKE_SOURCE_DIR}/external/raygui/src
 )
 
 # Optional: enable compiler warnings

@@ -1,6 +1,6 @@
-#include "Scenes.hpp"
-#include <chipmunk/chipmunk_types.h>
-#include <raylib.h>
+#include "AllScenes.hpp"
+#include "../CollisionTypes.hpp"
+#include "../SceneGame.hpp"
 
 SceneBullets::SceneBullets(SceneGame *ptr) {
   Parent = ptr;

@@ -1,5 +1,4 @@
-#include "index.hpp"
-#include <raylib.h>
+#include "Entity.hpp"
 
 void Entity::Draw() {
   cpVect pos = Phy->getPosition();

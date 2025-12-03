@@ -1,4 +1,5 @@
-#include "../Scenes.hpp"
+#include "SceneGame.hpp"
+#include "CollisionTypes.hpp"
 
 void SceneGame::InitPlayerAndCam() {
   Player.Phy = new Pebble::Obj(Space, {0, 0}, {32, 32}, 16);
@@ -40,7 +41,7 @@ void SceneGame::UpdatePlayer(const float &dt) {
 
   if (IsKeyDown(KEY_W) && fuel > 0) {
     Player.Phy->applyForce({0, -pow(2, 19) * dt});
-    fuel -= 10 * dt;
+    fuel -= 0.5 * dt;
     fuel = std::max(fuel, 0.0f);
   }
 
