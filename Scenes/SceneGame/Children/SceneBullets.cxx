@@ -1,9 +1,12 @@
 #include "AllScenes.hpp"
 #include "../CollisionTypes.hpp"
 #include "../SceneGame.hpp"
+#include "pebble.hpp"
+#include <memory>
 
 SceneBullets::SceneBullets(SceneGame *ptr) {
   Parent = ptr;
+  list.reserve(50);
   shootSound = LoadSound("Assets/shoot.wav");
 }
 
@@ -17,9 +20,10 @@ void SceneBullets::Shoot(Pebble::Obj *shooter) {
 
   cpVect pos = cpvadd(shooter->getPosition(), offset);
 
-  auto bullet = new Pebble::Obj(Parent->Space, pos, cpVect{1, 1}, 1);
+  list.emplace_back(std::make_unique<Pebble::Obj>(Parent->Space, pos, cpVect{1, 1}, 1));
+  Pebble::Obj& bullet = *list.back();
 
-  bullet->setAngle(angle);
+  bullet.setAngle(angle);
 
   cpVect bulletVel = cpv(0, static_cast<cpFloat>(-pow(2, 9)));
 
@@ -29,37 +33,39 @@ void SceneBullets::Shoot(Pebble::Obj *shooter) {
   // Make it relative to the shooter.
   bulletVel = cpvadd(bulletVel, shooter->getVelocity());
 
-  bullet->setVelocity(bulletVel);
+  bullet.setVelocity(bulletVel);
 
   shooter->applyImpulse({0, static_cast<cpFloat>(pow(2, 9))});
   // PlaySound(shootSound); so annoying aaa
-
-  bullet->setCollisionType((int)CollisionTypes::Bullet);
-
-  list.push_back(bullet);
+  
+  bullet.setCollisionType((int)CollisionTypes::Bullet);
 }
 
 void SceneBullets::Update(const float &dt) {
   (void)dt;
-  for (int i = 0; i < (int)list.size(); i++) {
+  for (int i = 0; i < (int)list.size();) {
 
-    auto bullet = list[i];
-
-    if (bullet->Collision) {
-      delete bullet;
-      list.erase(list.begin() + i);
+    if (list[i]->Collision) {
+      // list[i] will be deleted automatically because its a unique_ptr
+      list[i] = std::move(list.back());
+      list.pop_back();  
       continue;
     }
 
-    auto pos = bullet->getPosition();
+    auto pos = list[i]->getPosition();
     float dx = pos.x - Parent->Cam.target.x;
     float dy = pos.y - Parent->Cam.target.y;
-
+    
     if (dx < -Frax::ScreenSize.x / 2 || dx > Frax::ScreenSize.x / 2 ||
         dy < -Frax::ScreenSize.y / 2 || dy > Frax::ScreenSize.y / 2) {
-      delete bullet;
-      list.erase(list.begin() + i);
+      list[i] = std::move(list.back());
+      list.pop_back();
+      continue;  
     }
+
+    i++;
+    // If this is not incremented then the bullet that we just swapped will be checked.
+
   }
 }
 

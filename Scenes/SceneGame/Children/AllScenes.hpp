@@ -1,5 +1,6 @@
 #pragma once
 #include "Frax.hpp"
+#include <memory>
 #include <vector>
 #include <array>
 #include "../Entity.hpp"
@@ -51,7 +52,7 @@ struct SceneAsteroids : Frax::Scene {
 struct SceneBullets : Frax::Scene {
   SceneGame *Parent;
 
-  std::vector<Pebble::Obj *> list;
+  std::vector<std::unique_ptr<Pebble::Obj>> list;
   Sound shootSound;
 
   void Shoot(Pebble::Obj *obj);
