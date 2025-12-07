@@ -1,28 +1,33 @@
-# Dangan Starfall
-Dangan Starfall is a space shooter game set in the intense world of Danganronpa fan fiction, where players experience the thrill of surviving an execution. In this game, players not only battle through challenging space shooter trying survive the execution. Every character who participated in the killing game will be available for play, adding depth and variety to the experience which ofcourse, means that there will be twists in the gameplay for all characters. Creating a fresh experience DESPAIR of Danganronpa in a whole new way.
+# Dangan Starfall 🚀✨
 
-![alt text](image.png)
+Dangan Starfall is a space shooter game set in the intense world of Danganronpa fan fiction, where players experience the thrill of surviving an execution. In this game, players not only battle through challenging space shooter trying survive the execution. Every character who participated in the killing game will be available for play, adding depth and variety to the experience which of course, means that there will be twists in the gameplay for all characters. Creating a fresh experience DESPAIR of Danganronpa in a whole new way.
 
-# Get In Touch
-If you are interested in this project or would like to get in touch with me, join the development discord server.
-https://discord.gg/7zvpWnE7QV
+![Gameplay Screenshot](image.png)
 
-# Building from source.
-Before speaking anything, here are the things you'll need to have installed.
-- A C++ compiler
-- Cmake
-- Raylib installed
-- Chipmunk Physics installed
-- Discord rpc installed
+## 🎮 Features
+💡 *Note:* The game is actively in **alpha** and target features don't exist properly.
+- 🧑‍🤝‍🧑 Playable characters from **Danganronpa 1 → V3**  
+- ⚡ Lots of **special weapons and power-ups**  
+- ⛽ **Fuel system** for movement with **recoil-dependent mechanics**  
+- 🌌 **Infinite world** — explore without levels  
+- 🎯 Unique challenges and twists with every character  
 
-## Windows
-Not supported as the game is in alpha phase and will be supported soon after the game reaches a beta phase most likely.
 
-## Linux
-Also, on linux installing the above things would be pretty simple.\
-Just install the libraries using your package manager. \
-Although you might have to add repositories for some of them.\
-Apart from the compiler that is, which is im pretty sure preinstalled in all distros.
+## 💻 Platforms
+- Windows, Linux and Android  
+> ⚠️ The game is developed on linux so linux builds will always be upto date, expect latest releases on all platform soon when the core mechanics are completed.
 
-## Android
-I use raymob for compiling to android. which I haven't since I've integrated chipmunk as my physics engine. I'll compile to android once it reaches beta phase.
+## 🎹 Controls
+
+- **WASD** → Move  
+- **Left Mouse Button (LMB)** → Shoot  
+- **X** → Developer key (to be removed later)  
+
+## ⚙️ Build / Installation
+
+- Instructions for building from source will be added soon.  
+
+## 📢 Get in Touch
+
+Join the development Discord server to chat about the game, report bugs, or just hang out!  
+[Discord Link](https://discord.gg/7zvpWnE7QV)  
