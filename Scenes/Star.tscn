@@ -1,0 +1,11 @@
+[gd_scene load_steps=2 format=3 uid="uid://cb5yp0rr57af1"]
+
+[ext_resource type="Texture2D" uid="uid://by0fmd0iqjxpu" path="res://Assets/spritesheet.png" id="1_jllp1"]
+
+[node name="Star" type="Sprite2D"]
+modulate = Color(0.5529556, 0.55295557, 0.55295557, 1)
+position = Vector2(9.536743e-07, 9.536743e-07)
+scale = Vector2(-0.4981408, 0.4981408)
+texture = ExtResource("1_jllp1")
+region_enabled = true
+region_rect = Rect2(472, 216, 16, 16)

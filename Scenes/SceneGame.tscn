@@ -1,0 +1,54 @@
+[gd_scene load_steps=6 format=3 uid="uid://c1sbxw4qwfsn8"]
+
+[ext_resource type="Script" uid="uid://dpxi5dwbssipa" path="res://Scripts/Player.gd" id="1_1pxmn"]
+[ext_resource type="Texture2D" uid="uid://by0fmd0iqjxpu" path="res://Assets/spritesheet.png" id="2_2j7f6"]
+[ext_resource type="Script" uid="uid://cmkbwsmlt73jn" path="res://Scripts/Stars.gd" id="3_2j7f6"]
+[ext_resource type="PackedScene" uid="uid://cb5yp0rr57af1" path="res://Scenes/Star.tscn" id="4_j8om2"]
+[ext_resource type="PackedScene" uid="uid://b132qs651xvmu" path="res://Scenes/Asteroid.tscn" id="5_8mxl6"]
+
+[node name="Node2D" type="Node2D"]
+
+[node name="Stars" type="Parallax2D" parent="."]
+repeat_size = Vector2(1152, 648)
+script = ExtResource("3_2j7f6")
+starScene = ExtResource("4_j8om2")
+
+[node name="Player" type="RigidBody2D" parent="."]
+position = Vector2(576, 324)
+script = ExtResource("1_1pxmn")
+metadata/_edit_group_ = true
+
+[node name="Sprite2D" type="Sprite2D" parent="Player"]
+rotation = 1.5707964
+texture = ExtResource("2_2j7f6")
+region_enabled = true
+region_rect = Rect2(8, 136, 48, 48)
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Player"]
+rotation = 1.5707964
+polygon = PackedVector2Array(0, -25, 9, 1, 24, 16, 17, 24, 8, 24, 8, 16, -8, 16, -8, 24, -16, 24, -24, 16, -24, 16, -8, 0)
+
+[node name="Camera2D" type="Camera2D" parent="Player"]
+
+[node name="Asteroids" type="Node2D" parent="."]
+
+[node name="Asteroid" parent="Asteroids" instance=ExtResource("5_8mxl6")]
+position = Vector2(318, 267)
+
+[node name="Asteroid2" parent="Asteroids" instance=ExtResource("5_8mxl6")]
+position = Vector2(275, 501)
+
+[node name="Asteroid3" parent="Asteroids" instance=ExtResource("5_8mxl6")]
+position = Vector2(847, 154)
+
+[node name="Asteroid4" parent="Asteroids" instance=ExtResource("5_8mxl6")]
+position = Vector2(851, 478)
+
+[node name="Asteroid5" parent="Asteroids" instance=ExtResource("5_8mxl6")]
+position = Vector2(517, 182)
+
+[node name="Asteroid6" parent="Asteroids" instance=ExtResource("5_8mxl6")]
+position = Vector2(536, 482)
+
+[node name="Asteroid7" parent="Asteroids" instance=ExtResource("5_8mxl6")]
+position = Vector2(774, 296)
