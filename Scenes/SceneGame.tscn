@@ -1,10 +1,12 @@
-[gd_scene load_steps=6 format=3 uid="uid://c1sbxw4qwfsn8"]
+[gd_scene load_steps=8 format=3 uid="uid://c1sbxw4qwfsn8"]
 
 [ext_resource type="Script" uid="uid://dpxi5dwbssipa" path="res://Scripts/Player.gd" id="1_1pxmn"]
 [ext_resource type="Texture2D" uid="uid://by0fmd0iqjxpu" path="res://Assets/spritesheet.png" id="2_2j7f6"]
-[ext_resource type="Script" uid="uid://cmkbwsmlt73jn" path="res://Scripts/Stars.gd" id="3_2j7f6"]
-[ext_resource type="PackedScene" uid="uid://cb5yp0rr57af1" path="res://Scenes/Star.tscn" id="4_j8om2"]
-[ext_resource type="PackedScene" uid="uid://b132qs651xvmu" path="res://Scenes/Asteroid.tscn" id="5_8mxl6"]
+[ext_resource type="Script" uid="uid://cmkbwsmlt73jn" path="res://Scripts/StarsSpawner.gd" id="3_2j7f6"]
+[ext_resource type="PackedScene" uid="uid://cb5yp0rr57af1" path="res://Scenes/Stars.tscn" id="4_j8om2"]
+[ext_resource type="PackedScene" uid="uid://b2sagp3fnahiu" path="res://Scenes/Bullet.tscn" id="4_koxch"]
+[ext_resource type="Script" uid="uid://n3m7p0x22k4t" path="res://Scripts/AsteroidsSpawner.gd" id="5_8mxl6"]
+[ext_resource type="PackedScene" uid="uid://b132qs651xvmu" path="res://Scenes/Asteroid.tscn" id="6_28m3g"]
 
 [node name="Node2D" type="Node2D"]
 
@@ -14,11 +16,20 @@ script = ExtResource("3_2j7f6")
 starScene = ExtResource("4_j8om2")
 
 [node name="Player" type="RigidBody2D" parent="."]
+unique_name_in_owner = true
 position = Vector2(576, 324)
 script = ExtResource("1_1pxmn")
+bulletScene = ExtResource("4_koxch")
 metadata/_edit_group_ = true
 
-[node name="Sprite2D" type="Sprite2D" parent="Player"]
+[node name="Tail" type="Sprite2D" parent="Player"]
+position = Vector2(-44, 0)
+rotation = 1.5707964
+texture = ExtResource("2_2j7f6")
+region_enabled = true
+region_rect = Rect2(400, 320, 32, 57)
+
+[node name="Body" type="Sprite2D" parent="Player"]
 rotation = 1.5707964
 texture = ExtResource("2_2j7f6")
 region_enabled = true
@@ -30,25 +41,16 @@ polygon = PackedVector2Array(0, -25, 9, 1, 24, 16, 17, 24, 8, 24, 8, 16, -8, 16,
 
 [node name="Camera2D" type="Camera2D" parent="Player"]
 
+[node name="BulletSpawn" type="Node2D" parent="Player"]
+position = Vector2(30, 0)
+
 [node name="Asteroids" type="Node2D" parent="."]
+script = ExtResource("5_8mxl6")
+asteroidScene = ExtResource("6_28m3g")
+asteroidsCount = 16
 
-[node name="Asteroid" parent="Asteroids" instance=ExtResource("5_8mxl6")]
-position = Vector2(318, 267)
+[node name="Timer" type="Timer" parent="Asteroids"]
 
-[node name="Asteroid2" parent="Asteroids" instance=ExtResource("5_8mxl6")]
-position = Vector2(275, 501)
+[node name="Bullets" type="Node2D" parent="."]
 
-[node name="Asteroid3" parent="Asteroids" instance=ExtResource("5_8mxl6")]
-position = Vector2(847, 154)
-
-[node name="Asteroid4" parent="Asteroids" instance=ExtResource("5_8mxl6")]
-position = Vector2(851, 478)
-
-[node name="Asteroid5" parent="Asteroids" instance=ExtResource("5_8mxl6")]
-position = Vector2(517, 182)
-
-[node name="Asteroid6" parent="Asteroids" instance=ExtResource("5_8mxl6")]
-position = Vector2(536, 482)
-
-[node name="Asteroid7" parent="Asteroids" instance=ExtResource("5_8mxl6")]
-position = Vector2(774, 296)
+[connection signal="timeout" from="Asteroids/Timer" to="Asteroids" method="_on_timer_timeout"]
