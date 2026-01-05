@@ -33,6 +33,8 @@ func _spawn_enemy():
 	
 	var notifier = enemy.get_node("VisibleOnScreenNotifier2D")
 	notifier.screen_exited.connect(_on_enemy_outside.bind(enemy))
+
+	enemy.modulate = Color(randf(), randf(), randf(), 1.0)
 	
 	add_child(enemy)
 

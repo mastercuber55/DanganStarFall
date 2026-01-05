@@ -28,6 +28,9 @@ func _spawn_asteroid():
 	var notifier = asteroid.get_node("VisibleOnScreenNotifier2D")
 	notifier.screen_exited.connect(_on_asteroid_outside.bind(asteroid))
 	
+	asteroid.modulate = Color(randf(), randf(), randf(), 1.0)
+	asteroid.get_node("HealthComponent").health = s * 10
+	
 	add_child(asteroid)
 
 func _on_asteroid_outside(asteroid: RigidBody2D):

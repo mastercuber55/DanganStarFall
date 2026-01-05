@@ -46,9 +46,10 @@ unique_name_in_owner = true
 script = ExtResource("8_bgqso")
 bulletScene = ExtResource("4_koxch")
 
-[node name="CanvasLayer" type="CanvasLayer" parent="."]
+[node name="User Interface" type="CanvasLayer" parent="."]
+unique_name_in_owner = true
 
-[node name="Label" type="Label" parent="CanvasLayer"]
+[node name="Health Label" type="Label" parent="User Interface"]
 offset_right = 40.0
 offset_bottom = 23.0
 

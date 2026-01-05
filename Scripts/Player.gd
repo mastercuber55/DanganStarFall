@@ -1,10 +1,10 @@
 extends RigidBody2D
 
 const THRUST := 300.0
-const RECOIL := -100 
+const RECOIL := -50 
 
-@onready var bulletsContainer := %Bullets
-@onready var progressBar := $"../CanvasLayer/Label"
+const cooldownMS := 250
+var nextTime := 0.0
 
 func _ready() -> void:
 	get_node("HealthComponent").health_changed.connect(update_progress_bar)
@@ -20,9 +20,13 @@ func _integrate_forces(state: PhysicsDirectBodyState2D) -> void:
 	else:
 		$Tail.visible = false
 		
-	if Input.is_action_just_pressed("Shoot"):
-		bulletsContainer.shootBullet(self)
-		state.apply_central_impulse(transform.x * RECOIL)
+	if Input.is_action_pressed("Shoot"):
+		var currentTime = Time.get_ticks_msec()
+		
+		if currentTime >= nextTime:
+			%Bullets.shootBullet(self)
+			state.apply_central_impulse(transform.x * RECOIL)
+			nextTime = currentTime + cooldownMS
 		
 func update_progress_bar() -> void:
-	progressBar.text = "HP: " + str($HealthComponent.health)
+	$"../User Interface/Health Label".text = "HP: " + str($HealthComponent.health)

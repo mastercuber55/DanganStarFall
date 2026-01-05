@@ -34,8 +34,6 @@ func _integrate_forces(state: PhysicsDirectBodyState2D) -> void:
 			bulletsManager.shootBullet(self)
 			state.apply_central_impulse(transform.x * RECOIL)
 			nextTime = currentTime + cooldownMS
-		else:
-			pass
 			
 	elif dist < 300:
 		chaseState = true
