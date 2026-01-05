@@ -1,24 +1,37 @@
 extends Node2D
 
 @export var asteroidScene: PackedScene
-@export var asteroidsCount := 200
 
-@onready var screenSize = get_viewport_rect().size
+@onready var camera = %Player/Camera2D
+@onready var screenSize = get_viewport_rect().size/camera.zoom
 
 func _spawn_asteroid():
-	var newAsteroid := asteroidScene.instantiate()
+	var asteroid := asteroidScene.instantiate()
 		
-	newAsteroid.position = Vector2(
-		randf_range(0, screenSize.x),
-		randf_range(0, screenSize.y)
-	)	
+	var camPos = camera.get_screen_center_position()
+	
+	var x_min = camPos.x - (screenSize.x / 2)
+	var x_max = camPos.x + (screenSize.x / 2)
+	var y_min = camPos.y - (screenSize.y / 2)
+	var y_max = camPos.y + (screenSize.y / 2)
+	
+	asteroid.position = Vector2(
+		randf_range(x_min, x_max),
+		randf_range(y_min, y_max)
+	)
 	
 	var s = randf_range(0.5, 2.0)
 	
-	for child in newAsteroid.get_children():	
+	for child in asteroid.get_children():	
 		child.scale = Vector2(s, s)
 	
-	add_child(newAsteroid)
+	var notifier = asteroid.get_node("VisibleOnScreenNotifier2D")
+	notifier.screen_exited.connect(_on_asteroid_outside.bind(asteroid))
+	
+	add_child(asteroid)
+
+func _on_asteroid_outside(asteroid: RigidBody2D):
+	asteroid.queue_free()
 
 func _ready() -> void:
 	$Timer.start()

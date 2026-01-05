@@ -1,11 +1,14 @@
 extends RigidBody2D
 
-
 const THRUST := 300.0
-const BULLET_IMPULSE := 400 
+const RECOIL := -100 
 
-@onready var bulletsContainer := $"../Bullets"
-@export var bulletScene: PackedScene
+@onready var bulletsContainer := %Bullets
+@onready var progressBar := $"../CanvasLayer/Label"
+
+func _ready() -> void:
+	get_node("HealthComponent").health_changed.connect(update_progress_bar)
+	update_progress_bar()
 
 func _integrate_forces(state: PhysicsDirectBodyState2D) -> void:
 	
@@ -18,8 +21,8 @@ func _integrate_forces(state: PhysicsDirectBodyState2D) -> void:
 		$Tail.visible = false
 		
 	if Input.is_action_just_pressed("Shoot"):
-		var bullet := bulletScene.instantiate()
-		bullet.global_position = $BulletSpawn.global_position
-		bulletsContainer.add_child(bullet)
-		bullet.apply_central_impulse(transform.x * BULLET_IMPULSE)
-		state.apply_central_impulse(transform.x * -BULLET_IMPULSE/4)
+		bulletsContainer.shootBullet(self)
+		state.apply_central_impulse(transform.x * RECOIL)
+		
+func update_progress_bar() -> void:
+	progressBar.text = "HP: " + str($HealthComponent.health)
